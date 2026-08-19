@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OMIYAcappella｜大宮アカペラプラットフォーム</title>
+<meta name="description" content="「楽しく、いつでも、アカペラを、大宮で」。固定バンドを組まずに、一日 or 短期の企画バンドを自由につくれる、アカペラ経験者限定のプラットフォームです。">
+<meta name="keywords" content="OMIYAcappella,大宮,埼玉,アカペラ,社会人アカペラ,プラットフォーム,サークル">
+<meta name="theme-color" content="#fcfaf5">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OMIYAcappella 大宮アカペラプラットフォーム">
+<meta property="og:title" content="OMIYAcappella｜大宮アカペラプラットフォーム">
+<meta property="og:description" content="「楽しく、いつでも、アカペラを、大宮で」。一日 or 短期の企画バンドを自由につくれる、アカペラ経験者限定のプラットフォーム。">
+<meta property="og:image" content="./assets/img/post_pinned.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OMIYAacappella">
+
+<link rel="icon" href="./assets/img/logo.jpg">
+<link rel="apple-touch-icon" href="./assets/img/logo.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+
+<!-- Opening animation: the four logo circles converging -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="circles">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<!-- ====================== HEADER ====================== -->
+<header class="header" id="header">
+  <div class="header__inner">
+    <a class="brand" href="#top">
+      <img class="brand__mark" src="./assets/img/logo.jpg" alt="">
+      <span>OMIYAcappella</span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="メニューを開く">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav" id="nav" aria-label="メインナビゲーション">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="#about">プラットフォーム</a></li>
+        <li><a class="nav__link" href="#biography">バイオグラフィー</a></li>
+        <li><a class="nav__link" href="#projects">企画募集</a></li>
+        <li><a class="nav__link" href="#x">X（Twitter）</a></li>
+        <li><a class="btn nav__cta" href="#contact">お問い合わせ<span class="btn__arrow" aria-hidden="true">→</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ====================== HERO ====================== -->
+  <section class="hero">
+    <span class="deco deco--diamond deco--blue" aria-hidden="true"></span>
+    <span class="deco deco--diamond deco--yellow" aria-hidden="true"></span>
+
+    <div class="container hero__grid">
+      <div class="hero__text">
+        <p class="hero__eyebrow">Omiya Acappella Platform</p>
+
+        <h1 class="hero__title">
+          <span>楽しく、いつでも、</span>
+          <span>アカペラを、<span class="accent">大宮</span>で</span>
+        </h1>
+
+        <p class="hero__sub">
+          サークルのように固定バンドを組むのではなく、歌いたいときに、歌いたい曲を。
+          一日 or 短期の企画バンドを自由につくれる、アカペラ経験者限定のプラットフォームです。
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--accent btn--lg" href="#projects">企画募集を見る<span class="btn__arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--lg" href="#about">わたしたちについて</a>
+        </div>
+
+        <dl class="hero__meta">
+          <div>
+            <dt>Area</dt>
+            <dd>埼玉・大宮</dd>
+          </div>
+          <div>
+            <dt>Members</dt>
+            <dd>アカペラ経験者<br>限定</dd>
+          </div>
+          <div>
+            <dt>Fee</dt>
+            <dd>会費 0円</dd>
+          </div>
+          <div>
+            <dt>Since</dt>
+            <dd>2022</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="hero__visual">
+        <figure class="hero__photo">
+          <img src="./assets/img/omiya-station.jpg" alt="JR大宮駅西口の駅舎" width="1920" height="1280">
+        </figure>
+        <div class="circles hero__circles" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <p class="hero__scroll" aria-hidden="true">Scroll</p>
+  </section>
+
+  <!-- ====================== MARQUEE ====================== -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>楽しく、いつでも、アカペラを、大宮で</span>
+      <span>Omiya, Saitama</span>
+      <span>One-day &amp; short-term bands</span>
+      <span>楽しく、いつでも、アカペラを、大宮で</span>
+      <span>Omiya, Saitama</span>
+      <span>One-day &amp; short-term bands</span>
+    </div>
+  </div>
+
+  <!-- ====================== 01 ABOUT ====================== -->
+  <section class="section" id="about">
+    <span class="ghost-num" aria-hidden="true">01</span>
+
+    <div class="container">
+      <header class="sec-head reveal">
+        <p class="sec-head__index">01 — About</p>
+        <h2 class="sec-head__title">このプラットフォームについて</h2>
+        <p class="sec-head__lead">
+          OMIYAcappella は「サークル」ではありません。バンドを固定せず、練習も強制せず、
+          歌いたい人が歌いたいときに集まるための<strong>「場」</strong>を提供する、大宮のアカペラプラットフォームです。
+        </p>
+      </header>
+
+      <div class="about__body">
+        <div class="about__text reveal">
+          <p>
+            アカペラを続けたいけれど、毎週の練習やバンドの固定メンバーに縛られるのはむずかしい。
+            社会人になって、学生の頃のように気軽に集まれなくなった。
+            <strong>OMIYAcappella は、そんな人のためにつくられました。</strong>
+          </p>
+          <p>
+            やりとりの中心は LINE グループ。
+            「この曲を歌いたいのですが、誰か集まりませんか？」「◯日にアカペラしませんか？」——
+            メンバーなら誰でも声をかけられます。集まったらそのまま一日限りの企画バンドが成立。
+            イベントに出たいときは、それに向けた短期バンドを組むこともできます。
+          </p>
+          <p>
+            練習場所は大宮のスタジオ・カラオケ・公園に限定。
+            エリアを敢えて狭めることで、「大宮で集まれる仲間」という輪郭をはっきりさせています。
+            会費はなく、活動の強制も一切ありません。
+          </p>
+        </div>
+
+        <div class="about__media reveal" data-delay="1">
+          <figure class="about__photo">
+            <img src="./assets/img/omiya-park-sakura.jpg" alt="桜の季節の大宮公園" width="1920" height="1440" loading="lazy">
+          </figure>
+          <p class="about__caption">大宮公園 — 練習場所は大宮のスタジオ・カラオケ・公園に限定しています。</p>
+        </div>
+      </div>
+
+      <div class="pillars">
+        <div class="pillar reveal">
+          <div class="pillar__dot" aria-hidden="true"></div>
+          <h3 class="pillar__title">固定バンドを<br>つくらない</h3>
+          <p class="pillar__text">一日 or 短期の企画バンドのみ。長期の固定バンドをグループ内で組むことは禁止しています。</p>
+        </div>
+        <div class="pillar reveal" data-delay="1">
+          <div class="pillar__dot" aria-hidden="true"></div>
+          <h3 class="pillar__title">活動の強制は<br>一切なし</h3>
+          <p class="pillar__text">参加も不参加も自由。歌いたいときに手を挙げればいい、それだけのシンプルな仕組みです。</p>
+        </div>
+        <div class="pillar reveal" data-delay="2">
+          <div class="pillar__dot" aria-hidden="true"></div>
+          <h3 class="pillar__title">練習場所は<br>大宮で</h3>
+          <p class="pillar__text">大宮のスタジオ・カラオケ・公園に限定。集まりやすさと、コミュニティの輪郭を守るためです。</p>
+        </div>
+        <div class="pillar reveal" data-delay="3">
+          <div class="pillar__dot" aria-hidden="true"></div>
+          <h3 class="pillar__title">やりとりは<br>LINEグループ</h3>
+          <p class="pillar__text">募集も連絡もLINEグループで完結。誰でも自分から企画を立ち上げられます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 02 BIOGRAPHY ====================== -->
+  <section class="section section--dark" id="biography">
+    <span class="ghost-num" aria-hidden="true">02</span>
+
+    <div class="container">
+      <header class="sec-head reveal">
+        <p class="sec-head__index">02 — Biography</p>
+        <h2 class="sec-head__title">バイオグラフィー</h2>
+        <p class="sec-head__lead">
+          2022年、大宮でアカペラを続けるための小さな「場」として始まりました。
+          規模は大きくありませんが、その分ひとつひとつの企画を楽しくやっています。
+        </p>
+      </header>
+
+      <div class="bio__grid">
+        <ol class="timeline reveal">
+          <li class="tl-item">
+            <p class="tl-item__year">2022.01</p>
+            <h3 class="tl-item__title">X（旧Twitter）アカウント開設、コミュニティ始動</h3>
+            <p class="tl-item__text">
+              「楽しく、いつでも、アカペラを、大宮で」をコンセプトに、
+              アカペラ経験者限定のLINEグループとして活動をスタート。
+            </p>
+          </li>
+          <li class="tl-item">
+            <p class="tl-item__year">2022</p>
+            <h3 class="tl-item__title">活動ルールを整備、公式サイトを公開</h3>
+            <p class="tl-item__text">
+              企画バンドの立て方、練習場所、キャンセル時の連絡など、
+              気持ちよく集まるための最低限のルールを明文化しました。
+            </p>
+          </li>
+          <li class="tl-item">
+            <p class="tl-item__year">2024.07</p>
+            <h3 class="tl-item__title">プラットフォームとして本格始動</h3>
+            <p class="tl-item__text">
+              「一日 or 短期の企画バンドを自由につくれる【場】を提供する」——
+              現在まで固定ポストとして掲げているステートメントを公開。
+            </p>
+          </li>
+          <li class="tl-item">
+            <p class="tl-item__year">2026.05</p>
+            <h3 class="tl-item__title">舞浜アカペラストリートに出演</h3>
+            <p class="tl-item__text">
+              本コミュニティから企画バンド「おおみやの森」が出演。
+              いきものがかり『帰りたくなったよ』を披露しました。（@ IKSPIARI 2F セレブレーション・プラザ）
+            </p>
+          </li>
+          <li class="tl-item">
+            <p class="tl-item__year">2026.06</p>
+            <h3 class="tl-item__title">コミュニティQ&amp;Aを公開</h3>
+            <p class="tl-item__text">
+              会費なし・強制的な活動なし・退会自由。
+              問い合わせの多かった点をXで公開し、参加のハードルを下げました。
+            </p>
+          </li>
+          <li class="tl-item">
+            <p class="tl-item__year">2026</p>
+            <h3 class="tl-item__title">現在も新しいメンバーを募集中</h3>
+            <p class="tl-item__text">
+              今年から都内や埼玉で働き始めた方、異動で関東に来た方も歓迎。
+              BBQや飲み会などアカペラ以外の交流も定期的に開催しています。
+            </p>
+          </li>
+        </ol>
+
+        <div class="bio__side reveal" data-delay="1">
+          <dl class="bio__stats">
+            <div class="bio__stat">
+              <dt>Founded</dt>
+              <dd>2022<small>年</small></dd>
+            </div>
+            <div class="bio__stat">
+              <dt>Followers on X</dt>
+              <dd>1,900<small>+</small></dd>
+            </div>
+            <div class="bio__stat">
+              <dt>Membership fee</dt>
+              <dd>0<small>円</small></dd>
+            </div>
+            <div class="bio__stat">
+              <dt>Base</dt>
+              <dd>大宮</dd>
+            </div>
+          </dl>
+          <p class="bio__note">
+            ※ 数値は 2026年8月時点。X（@OMIYAacappella）のプロフィールおよび公開ポストに基づいています。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 03 PROJECTS ====================== -->
+  <section class="section section--tint" id="projects">
+    <span class="ghost-num" aria-hidden="true">03</span>
+
+    <div class="container">
+      <header class="sec-head reveal">
+        <p class="sec-head__index">03 — Projects</p>
+        <h2 class="sec-head__title">企画募集</h2>
+        <p class="sec-head__lead">
+          企画は誰でも立ち上げられます。歌いたい曲があれば、LINEグループに一言投げるところから。
+          その流れと、参加していただくための条件をまとめました。
+        </p>
+      </header>
+
+      <div class="flow">
+        <div class="flow__item reveal">
+          <h3 class="flow__title">グループで声をかける</h3>
+          <p class="flow__text">「△△を歌いたいのですが誰か集まりませんか？」——LINEグループのメンバーなら誰でも募集をかけられます。</p>
+        </div>
+        <div class="flow__item reveal" data-delay="1">
+          <h3 class="flow__title">企画バンドが成立</h3>
+          <p class="flow__text">集まったメンバーで、一日 or 短期の企画バンドを結成。音源と楽譜を共有して各自で音取りをします。</p>
+        </div>
+        <div class="flow__item reveal" data-delay="2">
+          <h3 class="flow__title">大宮で練習する</h3>
+          <p class="flow__text">大宮のスタジオ・カラオケ・公園に集合。音取りが済んだ状態で臨むのが、たった一つのお約束です。</p>
+        </div>
+        <div class="flow__item reveal" data-delay="3">
+          <h3 class="flow__title">歌う・イベントに出る</h3>
+          <p class="flow__text">その日限りで解散してもOK。舞浜アカペラストリートのようなイベントに向けて短期バンドを組むのもOKです。</p>
+        </div>
+      </div>
+
+      <div class="req reveal">
+        <div class="req__intro">
+          <span class="req__badge">Requirements</span>
+          <h3 class="req__title">参加をご検討中の方へ<br>募集要項</h3>
+          <p class="req__note">
+            OMIYAcappella はアカペラ経験者限定のプラットフォームです。
+            「少しアカペラを齧ったことがあります」という段階の方は、申し訳ありませんがお断りしています。
+          </p>
+        </div>
+
+        <ul class="req__list">
+          <li>
+            <div>
+              18〜35歳の方
+            </div>
+          </li>
+          <li>
+            <div>
+              アカペラ経験者の方
+              <em>学生または社会人のアカペラサークルでの活動経験がある方に限らせていただいています。</em>
+            </div>
+          </li>
+          <li>
+            <div>
+              1日で1曲をある程度歌えるレベル感の方
+              <em>上手さより、当日までに音取りを済ませて集まれることを大切にしています。</em>
+            </div>
+          </li>
+          <li>
+            <div>
+              関東圏にお住まいで、アカペラのために大宮に来られる方
+              <em>練習場所は大宮のスタジオ・カラオケ・公園に限定しています。</em>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="faq">
+        <div class="faq__item reveal">
+          <h3 class="faq__q">会費はかかりますか？</h3>
+          <p class="faq__a">一切ありません。スタジオ代など、その企画で実際にかかった費用のみ参加者で分担します。</p>
+        </div>
+        <div class="faq__item reveal" data-delay="1">
+          <h3 class="faq__q">アカペラ以外の活動はありますか？</h3>
+          <p class="faq__a">強制的な活動は一切ありませんが、BBQや飲み会は定期的に開催しています。参加は自由です。</p>
+        </div>
+        <div class="faq__item reveal" data-delay="2">
+          <h3 class="faq__q">退会は自由にできますか？</h3>
+          <p class="faq__a">自由です。引き止めるといったことは特にありません。またやりたくなったら戻ってきてください。</p>
+        </div>
+      </div>
+
+      <div class="projects__actions reveal">
+        <a class="btn" href="./rules.html">活動ルールを詳しく見る<span class="btn__arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--accent" href="#contact">参加を希望する<span class="btn__arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 04 X ====================== -->
+  <section class="section" id="x">
+    <span class="ghost-num" aria-hidden="true">04</span>
+
+    <div class="container">
+      <header class="sec-head reveal">
+        <p class="sec-head__index">04 — X / Twitter</p>
+        <h2 class="sec-head__title">Xでの発信</h2>
+        <p class="sec-head__lead">
+          最新の企画情報やイベント出演の様子は X（旧Twitter）で発信しています。
+          参加のご相談はDMでも受け付けています。
+        </p>
+      </header>
+
+      <div class="x-head reveal">
+        <a class="x-account" href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">
+          <img src="./assets/img/logo.jpg" alt="">
+          <span>
+            <span class="x-account__name">OMIYAcappella<br>【大宮アカペラプラットフォーム】</span>
+            <span class="x-account__handle">@OMIYAacappella</span>
+          </span>
+        </a>
+        <a class="btn btn--accent" href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">Xでフォローする<span class="btn__arrow" aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="posts">
+        <article class="post reveal">
+          <div class="post__media">
+            <img src="./assets/img/post_pinned.jpg" alt="OMIYAcappella のステートメント画像" loading="lazy">
+          </div>
+          <div class="post__body">
+            <p class="post__date">2024.07.27 ／ 固定ポスト</p>
+            <p class="post__text">OMIYAcappella🎉🎉
+
+「楽しく、いつでも、アカペラを、大宮で」
+
+アカペラ経験者限定のアカペラプラットフォームです！
+一日or短期の企画バンドを自由につくれる【場】を提供します。
+
+興味のある方はDMまで</p>
+            <p class="post__tags">#埼玉　#大宮　#アカペラ</p>
+            <a class="post__link" href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">Xで見る</a>
+          </div>
+        </article>
+
+        <article class="post reveal" data-delay="1">
+          <div class="post__body">
+            <p class="post__date">2026.05.08</p>
+            <p class="post__text">✨舞浜アカペラストリート✨
+
+［ 1日目 ］5月9日(土) 14:20-
+「おおみやの森」というバンドで本コミュニティより出演いたします！
+
+@ IKSPIARI 2F セレブレーション・プラザ</p>
+            <p class="post__tags">#アカペラ　#大宮</p>
+            <a class="post__link" href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">Xで見る</a>
+          </div>
+        </article>
+
+        <article class="post reveal" data-delay="2">
+          <div class="post__media">
+            <img src="./assets/img/bbq.jpg" alt="メンバーでのBBQの様子" loading="lazy">
+          </div>
+          <div class="post__body">
+            <p class="post__date">2026.07.05</p>
+            <p class="post__text">今年から都内や埼玉で働くことになった新卒の方や異動された方等、是非一緒にアカペラしませんか？
+
+本コミュニティの規模自体はそこまで大きくないですが、その分楽しく活動しています！</p>
+            <a class="post__link" href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">Xで見る</a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Live timeline. Requires network access; the cards above stay
+           readable if the widget is blocked. -->
+      <div class="x-embed reveal">
+        <p class="x-embed__label">Live timeline</p>
+        <div class="x-embed__frame">
+          <a class="twitter-timeline" data-height="600" data-dnt="true" data-lang="ja"
+             href="https://twitter.com/OMIYAacappella?ref_src=twsrc%5Etfw">@OMIYAacappella のタイムラインを見る</a>
+        </div>
+        <p class="x-embed__note">※ 通信環境や広告ブロッカーによっては埋め込みが表示されません。その場合は上のリンクからXをご覧ください。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== 05 CONTACT ====================== -->
+  <section class="section section--tint" id="contact">
+    <span class="ghost-num" aria-hidden="true">05</span>
+
+    <div class="container">
+      <header class="sec-head reveal">
+        <p class="sec-head__index">05 — Contact</p>
+        <h2 class="sec-head__title">連絡フォーム</h2>
+        <p class="sec-head__lead">
+          参加のご希望、ご質問、イベント出演のご相談などはこちらから。
+          いただいた内容は運営が確認のうえ、順次ご返信します。
+        </p>
+      </header>
+
+      <div class="contact__grid">
+        <aside class="contact__aside reveal">
+          <p>
+            フォームのほか、XのDMやメールでも受け付けています。
+            参加をご希望の場合は、アカペラ歴（所属していたサークル名など）を添えていただけるとスムーズです。
+          </p>
+
+          <div class="contact__direct">
+            <a href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">
+              <span>
+                <span class="label">X / DM</span>
+                <span class="value">@OMIYAacappella</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a href="mailto:REDACTED@example.com">
+              <span>
+                <span class="label">Email</span>
+                <span class="value">REDACTED@example.com</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </aside>
+
+        <!-- NOTE (prototype): no backend is wired up yet. Set the action to a
+             form service (Formspree / Google Forms / GAS) before deploying. -->
+        <form class="form reveal" id="contactForm" novalidate data-delay="1">
+          <div class="field">
+            <label class="field__label" for="f-name">お名前<span class="field__req">必須</span></label>
+            <input type="text" id="f-name" name="name" autocomplete="name" placeholder="大宮 花子">
+            <p class="field__error">お名前をご入力ください。</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-email">メールアドレス<span class="field__req">必須</span></label>
+            <input type="email" id="f-email" name="email" autocomplete="email" placeholder="you@example.com">
+            <p class="field__error">メールアドレスの形式をご確認ください。</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-type">お問い合わせ種別<span class="field__req">必須</span></label>
+            <select id="f-type" name="type">
+              <option value="">選択してください</option>
+              <option>参加を希望する</option>
+              <option>活動内容についての質問</option>
+              <option>イベント出演・共催のご相談</option>
+              <option>取材・掲載のご依頼</option>
+              <option>その他</option>
+            </select>
+            <p class="field__error">お問い合わせ種別をお選びください。</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-history">アカペラ歴<span class="field__req field__req--any">任意</span></label>
+            <input type="text" id="f-history" name="history" placeholder="例）大学のアカペラサークルで4年間／社会人サークルで2年">
+            <p class="field__hint">参加をご希望の方は、所属していたサークル名やパートをご記入ください。</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-message">お問い合わせ内容<span class="field__req">必須</span></label>
+            <textarea id="f-message" name="message" placeholder="ご質問やご希望をご自由にご記入ください。"></textarea>
+            <p class="field__error">お問い合わせ内容をご入力ください。</p>
+          </div>
+
+          <div class="field field--check">
+            <label>
+              <input type="checkbox" id="f-agree" name="agree">
+              <span>募集要項と活動ルールを確認し、内容に同意します。（<a href="./rules.html" style="border-bottom:1px solid currentColor">活動ルールを見る</a>）</span>
+            </label>
+            <p class="field__error">ご同意のうえ送信してください。</p>
+          </div>
+
+          <button class="btn btn--accent btn--lg form__submit" type="submit">
+            送信する<span class="btn__arrow" aria-hidden="true">→</span>
+          </button>
+
+          <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+
+          <p class="form__note">
+            ※ 本ページはプロトタイプです。送信先の設定が未接続のため、実際の送信は行われません。
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ====================== FOOTER ====================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div>
+        <p class="footer__logo">
+          <img src="./assets/img/logo.jpg" alt="">
+          OMIYAcappella
+        </p>
+        <p class="footer__tagline">楽しく、いつでも、アカペラを、大宮で</p>
+        <p class="footer__lead">
+          サークルのような固定バンドを作るのではなく、好きな時に好きな曲を歌うために。
+          一日 or 短期の企画バンドを自由につくれる、大宮のアカペラプラットフォームです。
+        </p>
+      </div>
+
+      <nav class="footer__nav" aria-label="フッターナビゲーション">
+        <div>
+          <h3>Menu</h3>
+          <ul>
+            <li><a href="#about">このプラットフォームについて</a></li>
+            <li><a href="#biography">バイオグラフィー</a></li>
+            <li><a href="#projects">企画募集</a></li>
+            <li><a href="./rules.html">活動ルール</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">X（@OMIYAacappella）</a></li>
+            <li><a href="mailto:REDACTED@example.com">メールで問い合わせる</a></li>
+            <li><a href="#contact">連絡フォーム</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© 2026 OMIYAcappella</p>
+      <p class="footer__credits">
+        大宮駅の写真：MaedaAkihiko（CC BY-SA 4.0）／大宮公園の写真：Guilhem Vellut（CC BY 2.0）— いずれも
+        <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>。
+        ロゴ・投稿画像は OMIYAcappella 提供。
+      </p>
+    </div>
+  </div>
+</footer>
+
+<p class="proto-flag">Prototype</p>
+
+<script src="https://platform.twitter.com/widgets.js" charset="utf-8" async></script>
+<script src="./assets/js/main.js"></script>
+</body>
+</html>
