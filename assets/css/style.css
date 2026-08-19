@@ -1283,9 +1283,10 @@ textarea {
    10c. 企画募集 — timeline rebuilt from the LINE group
    -------------------------------------------------------------------------- */
 .notice {
-  display: flex;
-  gap: 14px;
-  padding: 18px 22px;
+  /* Block, not flex: a flex container would split the sentence into separate
+     items at each inline tag. */
+  position: relative;
+  padding: 18px 22px 18px 58px;
   margin-bottom: clamp(30px, 4vw, 44px);
   border-left: 3px solid var(--c-accent);
   border-radius: 0 12px 12px 0;
@@ -1303,10 +1304,11 @@ textarea {
 
 .notice::before {
   content: "!";
-  flex: none;
+  position: absolute;
+  left: 22px;
+  top: 20px;
   width: 22px;
   height: 22px;
-  margin-top: 2px;
   border-radius: 50%;
   background: var(--c-accent);
   color: var(--white);
