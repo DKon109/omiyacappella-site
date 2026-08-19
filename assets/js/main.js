@@ -48,6 +48,11 @@
 
   var X_HANDLE = 'OMIYAacappella';
 
+  /* Live 企画募集 feed, published by the LINE webhook worker in /server.
+     Empty until the worker is deployed, in which case the section falls back
+     to the entries written into index.html. */
+  var PROJECTS_ENDPOINT = '';
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------------------------------------------------- Loader */
@@ -275,6 +280,101 @@
     window.twttr.ready(function (twttr) {
       twttr.widgets.load(xLatest);
     });
+  }
+
+  /* ------------------------------------------------ Live projects feed */
+  var lineTl = document.getElementById('lineTl');
+
+  if (lineTl && PROJECTS_ENDPOINT) {
+    fetch(PROJECTS_ENDPOINT)
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        var entries = (data && data.entries) || [];
+        if (!entries.length) return;
+
+        // Newest first, above the entries baked into the page.
+        entries.slice().reverse().forEach(function (entry) {
+          lineTl.insertBefore(buildProject(entry), lineTl.firstElementChild);
+        });
+
+        var notice = document.querySelector('#projects .notice');
+        if (notice) notice.classList.add('is-live');
+      })
+      .catch(function () {
+        // The static entries already on the page stand in for the feed.
+      });
+  }
+
+  function buildProject(entry) {
+    var article = document.createElement('article');
+    article.className = 'line-post line-post--open reveal is-visible is-live';
+    article.dataset.state = 'current';
+
+    var card = document.createElement('div');
+    card.className = 'line-post__card';
+
+    var top = document.createElement('div');
+    top.className = 'line-post__top';
+    top.appendChild(el('span', 'line-post__date', formatDate(entry.at)));
+    top.appendChild(el('span', 'tag tag--kind', entry.kind));
+    if (entry.status) {
+      var tone = entry.status === '募集中' ? 'open'
+        : entry.status === '成立' ? 'filled' : 'done';
+      top.appendChild(el('span', 'tag tag--' + tone, entry.status));
+    }
+    top.appendChild(el('span', 'tag tag--live', 'LINEから自動反映'));
+    card.appendChild(top);
+
+    var song = el('h3', 'line-post__song', entry.song);
+    if (entry.artist) song.appendChild(el('span', '', entry.artist));
+    card.appendChild(song);
+
+    if (entry.body) card.appendChild(el('p', 'line-post__body', entry.body));
+
+    var foot = document.createElement('dl');
+    foot.className = 'line-post__foot';
+    [
+      ['募集パート', entry.parts],
+      ['締切', entry.deadline],
+      ['日時', entry.date],
+      ['練習場所', entry.place]
+    ].forEach(function (pair) {
+      if (!pair[1]) return;
+      var wrap = document.createElement('div');
+      wrap.appendChild(el('dt', '', pair[0]));
+      wrap.appendChild(el('dd', '', pair[1]));
+      foot.appendChild(wrap);
+    });
+
+    // Held back on purpose: the feed never carries a name or a score link.
+    var poster = document.createElement('div');
+    poster.appendChild(el('dt', '', '投稿者'));
+    var dd = document.createElement('dd');
+    dd.appendChild(el('span', 'masked', '非公開'));
+    poster.appendChild(dd);
+    foot.appendChild(poster);
+
+    card.appendChild(foot);
+    article.appendChild(card);
+    return article;
+  }
+
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text) node.textContent = text;
+    return node;
+  }
+
+  function formatDate(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return '';
+    return d.getFullYear() + '.'
+      + String(d.getMonth() + 1).padStart(2, '0') + '.'
+      + String(d.getDate()).padStart(2, '0');
   }
 
   /* ------------------------------------------------- Past projects toggle */

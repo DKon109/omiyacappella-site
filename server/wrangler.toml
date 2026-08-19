@@ -1,0 +1,18 @@
+name = "omiyacappella-line"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# The site's origin, so the browser is allowed to read /projects.json.
+# Change this once the site has its own domain.
+[vars]
+ALLOWED_ORIGIN = "https://dkon109.github.io"
+
+# Created with: npx wrangler kv namespace create PROJECTS
+[[kv_namespaces]]
+binding = "PROJECTS"
+id = "PUT_YOUR_KV_NAMESPACE_ID_HERE"
+
+# Set as secrets, never committed:
+#   npx wrangler secret put LINE_CHANNEL_SECRET
+#   npx wrangler secret put LINE_ACCESS_TOKEN
+#   npx wrangler secret put LINE_GROUP_ID

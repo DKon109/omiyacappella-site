@@ -1392,6 +1392,15 @@ textarea {
 .tag--open { background: var(--c-accent); color: var(--white); }
 .tag--filled { background: var(--c-teal); color: var(--white); }
 .tag--done { background: var(--paper-2); color: var(--ink-45); }
+.tag--live {
+  background: var(--c-pale-yellow);
+  color: #7a5a11;
+}
+
+/* Entries that arrived from the LINE feed rather than the page source. */
+.line-post.is-live::before {
+  background: var(--c-yellow);
+}
 
 .line-post__song {
   font-size: clamp(16px, 2.1vw, 20px);
