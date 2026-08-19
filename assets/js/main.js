@@ -20,6 +20,34 @@
      Set this to '' to fall back to prototype mode, where nothing is sent. */
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/REDACTED@example.com';
 
+  /* Newest posts shown in the X section, newest first, pinned post excluded.
+     X sunset the auto-updating profile-timeline widget (its embed now renders
+     at zero height), so the posts are listed here instead. To refresh the
+     section, replace these three entries with the latest posts.
+
+     The text is rendered immediately as a readable card; where X's embed
+     script is reachable it upgrades that card in place, adding the photos and
+     the inline video player. */
+  var LATEST_POSTS = [
+    {
+      id: '2073646030047072696',
+      date: '2026.07.05',
+      text: '今年から都内や埼玉で働くことになった新卒の方や異動された方等、是非一緒にアカペラしませんか？\n\n本コミュニティの規模自体はそこまで大きくないですが、その分楽しく活動しています！'
+    },
+    {
+      id: '2067811327951970505',
+      date: '2026.06.19',
+      text: '✍️本コミュニティに関するQ&A\n過去いただいた問い合わせをもとにこちらで情報共有致します\n\n･会費は？\n一切ありません\n\n･アカペラ以外の活動は？\n強制的な活動は一切ありませんが、BBQや飲み会は定期的に開催しています\n\n･退会は自由？\n引き止める、といったことは特にありません'
+    },
+    {
+      id: '2053350183833145686',
+      date: '2026.05.10',
+      text: '舞浜アカペラストリート\n\n出演したバンド: おおみやの森\n\n帰りたくなったよ／いきものがかり'
+    }
+  ];
+
+  var X_HANDLE = 'OMIYAacappella';
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------------------------------------------------- Loader */
@@ -203,6 +231,72 @@
       if (e.key === 'Escape') closeLb();
       if (e.key === 'ArrowLeft') stepLb(-1);
       if (e.key === 'ArrowRight') stepLb(1);
+    });
+  }
+
+  /* ------------------------------------------------------- Latest X posts */
+  var xLatest = document.getElementById('xLatest');
+
+  if (xLatest && LATEST_POSTS.length) {
+    LATEST_POSTS.forEach(function (post) {
+      var url = 'https://twitter.com/' + X_HANDLE + '/status/' + post.id;
+
+      var quote = document.createElement('blockquote');
+      quote.className = 'twitter-tweet';
+      quote.setAttribute('data-lang', 'ja');
+      quote.setAttribute('data-dnt', 'true');
+      quote.setAttribute('data-conversation', 'none');
+
+      var date = document.createElement('p');
+      date.className = 'tweet-date';
+      date.textContent = post.date;
+
+      var body = document.createElement('p');
+      body.lang = 'ja';
+      body.textContent = post.text;
+
+      var link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = 'Xで見る（画像・動画つき）';
+
+      quote.appendChild(date);
+      quote.appendChild(body);
+      quote.appendChild(link);
+      xLatest.appendChild(quote);
+    });
+
+    // widgets.js loads async, so queue the render through its ready callback.
+    window.twttr = window.twttr || {
+      _e: [],
+      ready: function (f) { this._e.push(f); }
+    };
+    window.twttr.ready(function (twttr) {
+      twttr.widgets.load(xLatest);
+    });
+  }
+
+  /* ------------------------------------------------- Past projects toggle */
+  var pastToggle = document.getElementById('pastToggle');
+
+  if (pastToggle) {
+    var pastPosts = document.querySelectorAll('.line-post[data-state="past"]');
+
+    pastToggle.addEventListener('click', function () {
+      var open = pastToggle.getAttribute('aria-expanded') === 'true';
+      pastToggle.setAttribute('aria-expanded', String(!open));
+      pastToggle.innerHTML = open
+        ? '過去の企画を見る<span class="btn__arrow" aria-hidden="true">\u2192</span>'
+        : '過去の企画を閉じる<span class="btn__arrow" aria-hidden="true">\u2191</span>';
+
+      pastPosts.forEach(function (post) {
+        post.classList.toggle('is-collapsed', open);
+        // Entries revealed after their observer fired would stay transparent.
+        if (!open) post.classList.add('is-visible');
+      });
+
+      if (open) pastToggle.scrollIntoView({ block: 'center' });
     });
   }
 

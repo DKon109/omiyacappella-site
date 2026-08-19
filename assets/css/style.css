@@ -795,47 +795,6 @@ textarea {
 /* --------------------------------------------------------------------------
    9. Gallery
    -------------------------------------------------------------------------- */
-.gal-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  margin-bottom: clamp(34px, 4vw, 52px);
-  background: rgba(252, 250, 245, 0.18);
-  border: 1px solid rgba(252, 250, 245, 0.18);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.gal-stat {
-  padding: 24px 22px;
-  background: var(--ink);
-}
-
-.gal-stat dt {
-  font-family: var(--f-en);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(252, 250, 245, 0.55);
-}
-
-.gal-stat dd {
-  margin: 6px 0 0;
-  font-family: var(--f-en);
-  font-size: clamp(20px, 3vw, 32px);
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.gal-stat dd small {
-  font-size: 0.45em;
-  font-weight: 600;
-  margin-left: 3px;
-  color: rgba(252, 250, 245, 0.6);
-}
-
-/* Filter chips */
 .gal-filter {
   display: flex;
   flex-wrap: wrap;
@@ -845,10 +804,10 @@ textarea {
 
 .gal-filter button {
   padding: 10px 22px;
-  border: 1px solid rgba(252, 250, 245, 0.3);
+  border: 1px solid var(--line);
   border-radius: 999px;
-  background: transparent;
-  color: rgba(252, 250, 245, 0.75);
+  background: var(--white);
+  color: var(--ink-70);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -858,8 +817,8 @@ textarea {
 }
 
 .gal-filter button:hover {
-  border-color: var(--paper);
-  color: var(--paper);
+  border-color: var(--ink);
+  color: var(--ink);
 }
 
 .gal-filter button[aria-pressed="true"] {
@@ -880,10 +839,10 @@ textarea {
   display: block;
   width: 100%;
   padding: 0;
-  border: 0;
+  border: 1px solid var(--line);
   border-radius: 16px;
   overflow: hidden;
-  background: #222018;
+  background: var(--paper);
   cursor: pointer;
   text-align: left;
   aspect-ratio: 4 / 3;
@@ -903,20 +862,19 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s var(--ease), opacity 0.5s var(--ease);
+  transition: transform 0.8s var(--ease);
 }
 
 .gal-item:hover img,
 .gal-item:focus-visible img {
   transform: scale(1.05);
-  opacity: 0.72;
 }
 
 .gal-item__meta {
   position: absolute;
   inset: auto 0 0 0;
-  padding: 46px 22px 20px;
-  background: linear-gradient(transparent, rgba(12, 11, 9, 0.9));
+  padding: 52px 22px 20px;
+  background: linear-gradient(transparent, rgba(12, 11, 9, 0.88));
   color: var(--paper);
   pointer-events: none;
 }
@@ -926,7 +884,7 @@ textarea {
   margin-bottom: 8px;
   padding: 4px 11px;
   border-radius: 999px;
-  background: rgba(252, 250, 245, 0.16);
+  background: rgba(252, 250, 245, 0.22);
   backdrop-filter: blur(6px);
   font-family: var(--f-en);
   font-size: 10px;
@@ -954,7 +912,7 @@ textarea {
   display: block;
   margin-top: 5px;
   font-size: 12.5px;
-  color: rgba(252, 250, 245, 0.72);
+  color: rgba(252, 250, 245, 0.75);
 }
 
 /* Play badge on video items */
@@ -991,14 +949,7 @@ textarea {
   padding: 40px 0;
   text-align: center;
   font-size: 14px;
-  color: rgba(252, 250, 245, 0.6);
-}
-
-.gal-note {
-  margin-top: 26px;
-  font-size: 12.5px;
-  line-height: 1.85;
-  color: rgba(252, 250, 245, 0.55);
+  color: var(--ink-45);
 }
 
 /* Lightbox */
@@ -1242,49 +1193,68 @@ textarea {
 
 
 /* --------------------------------------------------------------------------
-   10b. Rules summary (inside About) — links out to rules.html
+   10a. Sub-categories — one shared frame for every block inside About
    -------------------------------------------------------------------------- */
-.rules-card {
-  margin-top: clamp(44px, 6vw, 72px);
-  padding: clamp(30px, 4vw, 52px);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: var(--ink);
-  color: var(--paper);
+.subsec + .subsec {
+  margin-top: clamp(56px, 8vw, 110px);
 }
 
-.rules-card__head {
+.subsec__head {
+  padding-left: clamp(16px, 2vw, 24px);
+  border-left: 3px solid var(--c-accent);
+  margin-bottom: clamp(26px, 3.5vw, 40px);
+}
+
+.subsec__no {
+  font-family: var(--f-en);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.subsec__title {
+  margin-top: 8px;
+  font-size: clamp(21px, 3.2vw, 34px);
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.subsec__lead {
+  margin-top: 14px;
+  max-width: 46em;
+  font-size: clamp(13.5px, 1.6vw, 15px);
+  color: var(--ink-70);
+}
+
+.subsec__actions {
+  margin-top: clamp(28px, 4vw, 40px);
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
+  gap: 14px;
 }
 
-.rules-card__title {
-  font-size: clamp(20px, 2.8vw, 28px);
-  font-weight: 900;
-  line-height: 1.5;
-}
-
-.rules-card__lead {
-  margin-top: 12px;
-  max-width: 44em;
-  font-size: 14px;
-  color: rgba(252, 250, 245, 0.68);
-}
-
+/* --------------------------------------------------------------------------
+   10b. Rules digest (inside About) — links out to rules.html
+   -------------------------------------------------------------------------- */
 .rules-chips {
-  margin-top: 30px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
 }
 
 .rules-chip {
-  padding: 20px 20px 18px;
-  border: 1px solid rgba(252, 250, 245, 0.18);
+  padding: 24px 22px 22px;
+  background: var(--white);
+  border: 1px solid var(--line);
   border-radius: 14px;
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+}
+
+.rules-chip:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 40px -32px rgba(20, 18, 15, 0.4);
 }
 
 .rules-chip__no {
@@ -1306,14 +1276,7 @@ textarea {
   margin-top: 8px;
   font-size: 12.5px;
   line-height: 1.8;
-  color: rgba(252, 250, 245, 0.62);
-}
-
-.rules-card__actions {
-  margin-top: 32px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
+  color: var(--ink-70);
 }
 
 /* --------------------------------------------------------------------------
@@ -1378,7 +1341,7 @@ textarea {
   height: 10px;
   border-radius: 50%;
   background: var(--c-teal);
-  box-shadow: 0 0 0 5px var(--paper-2);
+  box-shadow: 0 0 0 5px var(--paper);
 }
 
 .line-post--done::before { background: var(--ink-45); }
@@ -1492,6 +1455,10 @@ textarea {
   border-radius: 4px;
 }
 
+.line-post.is-collapsed {
+  display: none;
+}
+
 .line-cta {
   margin-top: clamp(40px, 5vw, 60px);
   display: flex;
@@ -1520,6 +1487,14 @@ textarea {
   border-radius: 18px;
   font-size: 14px;
   line-height: 1.85;
+}
+
+.tweet-grid blockquote.twitter-tweet .tweet-date {
+  font-family: var(--f-en);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-45);
 }
 
 .tweet-grid blockquote.twitter-tweet p {
