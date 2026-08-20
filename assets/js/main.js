@@ -150,6 +150,13 @@
     sections.forEach(function (s) { spyObserver.observe(s); });
   }
 
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text) node.textContent = text;
+    return node;
+  }
+
   /* --------------------------------------------------------- Gallery filter */
   var galGrid = document.getElementById('galGrid');
 
@@ -179,56 +186,148 @@
 
     /* ------------------------------------------------------------ Lightbox */
     var lb = document.getElementById('lightbox');
-    var lbImg = document.getElementById('lbImg');
+    var lbStage = document.getElementById('lbStage');
     var lbCap = document.getElementById('lbCap');
-    // Only photo items open in the lightbox; videos link straight out to X.
-    var photos = galItems.filter(function (i) { return i.dataset.src; });
     var lbIndex = 0;
     var lastFocus = null;
 
-    var renderLb = function () {
-      var item = photos[lbIndex];
-      lbImg.src = item.dataset.src;
-      lbImg.alt = item.querySelector('img') ? item.querySelector('img').alt : '';
+    /* X blocks hotlinking of video.twimg.com by Referer, and its embed service
+       is not always reachable, so the clips are served from this site and
+       played in a plain <video>. That also gives the browser's own fullscreen
+       control, which is what an embed could not reliably offer. */
+
+    var statusId = function (item) {
+      var match = (item.getAttribute('href') || '').match(/status\/(\d+)/);
+      return match ? match[1] : null;
+    };
+
+    var caption = function (item) {
+      var title = item.querySelector('.gal-item__title');
+      var sub = item.querySelector('.gal-item__sub');
+      return [title && title.textContent, sub && sub.textContent]
+        .filter(Boolean).join(' — ');
+    };
+
+    var xLink = function (item, label) {
+      return ' — <a href="' + item.getAttribute('href')
+        + '" target="_blank" rel="noopener">' + (label || 'Xの投稿を見る') + '</a>';
+    };
+
+    var showPhoto = function (item) {
+      var img = document.createElement('img');
+      img.src = item.dataset.src;
+      var thumb = item.querySelector('img');
+      img.alt = thumb ? thumb.alt : '';
+      lbStage.appendChild(img);
       lbCap.innerHTML = item.dataset.caption
         + (item.dataset.href
           ? ' — <a href="' + item.dataset.href + '" target="_blank" rel="noopener">Xの投稿を見る</a>'
           : '');
     };
 
+    var showMedia = function (item) {
+      // Audio posts were uploaded as a screen recording of a voice memo, so
+      // only the sound is worth playing — <audio> reads the same mp4.
+      var isAudio = item.dataset.kind === 'audio';
+      var player = document.createElement(isAudio ? 'audio' : 'video');
+      player.src = item.dataset.video;
+      player.controls = true;
+      player.autoplay = true;
+      player.preload = 'metadata';
+
+      if (!isAudio) {
+        player.playsInline = true;
+        player.className = 'lightbox__video';
+        var thumb = item.querySelector('img');
+        if (thumb) player.poster = thumb.getAttribute('src');
+      }
+
+      player.addEventListener('error', function () {
+        player.remove();
+        var fallback = document.createElement('p');
+        fallback.className = 'lightbox__fallback';
+        fallback.innerHTML = '再生できませんでした。<br>'
+          + '<a href="' + item.getAttribute('href')
+          + '" target="_blank" rel="noopener">Xの投稿ページで再生する</a>';
+        lbStage.appendChild(fallback);
+      });
+
+      if (isAudio) {
+        var shell = document.createElement('div');
+        shell.className = 'lightbox__audioshell';
+        shell.appendChild(el('span', 'lightbox__wave'));
+        shell.appendChild(player);
+        lbStage.appendChild(shell);
+      } else {
+        lbStage.appendChild(player);
+      }
+
+      lbCap.innerHTML = caption(item) + xLink(item);
+    };
+
+    var clearStage = function () {
+      var playing = lbStage.querySelector('video, audio');
+      if (playing) {
+        playing.pause();
+        playing.removeAttribute('src');
+        playing.load();
+      }
+      while (lbStage.firstChild) lbStage.removeChild(lbStage.firstChild);
+    };
+
+    var renderLb = function () {
+      var item = galItems[lbIndex];
+      clearStage();
+
+      if (item.dataset.src) showPhoto(item);
+      else if (item.dataset.video) showMedia(item);
+    };
+
     var openLb = function (index) {
       lbIndex = index;
       lastFocus = document.activeElement;
-      renderLb();
       lb.hidden = false;
       lb.classList.add('is-open');
       document.body.classList.add('is-locked');
+      renderLb();
       document.getElementById('lbClose').focus();
     };
 
     var closeLb = function () {
+      clearStage();
       lb.classList.remove('is-open');
       lb.hidden = true;
       document.body.classList.remove('is-locked');
       if (lastFocus) lastFocus.focus();
     };
 
+    /* Steps over whatever the active filter is showing, so ← → stays in step
+       with the grid the viewer is looking at. */
     var stepLb = function (delta) {
-      lbIndex = (lbIndex + delta + photos.length) % photos.length;
+      var shown = galItems.filter(function (i) { return !i.classList.contains('is-hidden'); });
+      if (!shown.length) return;
+      var at = shown.indexOf(galItems[lbIndex]);
+      var next = shown[(at + delta + shown.length) % shown.length];
+      lbIndex = galItems.indexOf(next);
       renderLb();
     };
 
-    photos.forEach(function (item, i) {
-      item.addEventListener('click', function () { openLb(i); });
+    galItems.forEach(function (item, i) {
+      item.addEventListener('click', function (e) {
+        // Leave cmd/ctrl-click and middle-click to open X in a new tab.
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        openLb(i);
+      });
     });
 
     document.getElementById('lbClose').addEventListener('click', closeLb);
     document.getElementById('lbPrev').addEventListener('click', function () { stepLb(-1); });
     document.getElementById('lbNext').addEventListener('click', function () { stepLb(1); });
 
-    // Clicking the backdrop closes; clicking the image or caption does not.
+    // Clicking the backdrop closes; clicking the media or caption does not.
     lb.addEventListener('click', function (e) {
-      if (e.target === lb) closeLb();
+      if (e.target === lb || e.target === lbStage) closeLb();
     });
 
     document.addEventListener('keydown', function (e) {
@@ -236,49 +335,6 @@
       if (e.key === 'Escape') closeLb();
       if (e.key === 'ArrowLeft') stepLb(-1);
       if (e.key === 'ArrowRight') stepLb(1);
-    });
-  }
-
-  /* ------------------------------------------------------- Latest X posts */
-  var xLatest = document.getElementById('xLatest');
-
-  if (xLatest && LATEST_POSTS.length) {
-    LATEST_POSTS.forEach(function (post) {
-      var url = 'https://twitter.com/' + X_HANDLE + '/status/' + post.id;
-
-      var quote = document.createElement('blockquote');
-      quote.className = 'twitter-tweet';
-      quote.setAttribute('data-lang', 'ja');
-      quote.setAttribute('data-dnt', 'true');
-      quote.setAttribute('data-conversation', 'none');
-
-      var date = document.createElement('p');
-      date.className = 'tweet-date';
-      date.textContent = post.date;
-
-      var body = document.createElement('p');
-      body.lang = 'ja';
-      body.textContent = post.text;
-
-      var link = document.createElement('a');
-      link.href = url;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = 'Xで見る（画像・動画つき）';
-
-      quote.appendChild(date);
-      quote.appendChild(body);
-      quote.appendChild(link);
-      xLatest.appendChild(quote);
-    });
-
-    // widgets.js loads async, so queue the render through its ready callback.
-    window.twttr = window.twttr || {
-      _e: [],
-      ready: function (f) { this._e.push(f); }
-    };
-    window.twttr.ready(function (twttr) {
-      twttr.widgets.load(xLatest);
     });
   }
 
@@ -360,13 +416,6 @@
     card.appendChild(foot);
     article.appendChild(card);
     return article;
-  }
-
-  function el(tag, className, text) {
-    var node = document.createElement(tag);
-    if (className) node.className = className;
-    if (text) node.textContent = text;
-    return node;
   }
 
   function formatDate(iso) {
