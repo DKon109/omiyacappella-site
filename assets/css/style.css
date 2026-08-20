@@ -915,6 +915,35 @@ textarea {
   color: rgba(252, 250, 245, 0.75);
 }
 
+/* Audio-only posts: the source clip is a screen recording of a voice memo,
+   so the card is drawn instead — brand waveform on ink. */
+.gal-item--audio {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.gal-item--audio .gal-item__wave {
+  position: absolute;
+  inset: 0;
+  background: url("../img/wave.svg") center / 86% 46% no-repeat;
+  opacity: 0.75;
+  transition: opacity 0.6s var(--ease), transform 0.8s var(--ease);
+}
+
+.gal-item--audio:hover .gal-item__wave,
+.gal-item--audio:focus-visible .gal-item__wave {
+  opacity: 1;
+  transform: scaleY(1.12);
+}
+
+.gal-item--audio .gal-item__meta {
+  background: linear-gradient(transparent, rgba(20, 18, 15, 0.95) 55%);
+}
+
+.gal-item--audio .gal-item__kind {
+  background: var(--c-teal);
+}
+
 /* Play badge on video items */
 .gal-item__play {
   position: absolute;
