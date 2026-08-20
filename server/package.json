@@ -1,0 +1,10 @@
+{
+  "name": "omiyacappella-line",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test.mjs",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  }
+}

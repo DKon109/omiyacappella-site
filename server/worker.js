@@ -33,6 +33,26 @@ const MARKERS = {
 const STORE_KEY = 'projects';
 const MAX_ENTRIES = 40;
 
+/* Posted by the bot the moment it is added to a group, so nobody meets it as
+   an unexplained account in the member list. Replies are free. */
+const INTRO = [
+  'OMIYAcappella のサイト連携Botです。はじめまして。',
+  '',
+  '【することだけ】',
+  '「#募集」「#イベント」「#実施」「#お知らせ」のいずれかで始まる投稿を、',
+  'ホームページの「企画募集」欄に自動で載せます。',
+  '',
+  '【しないこと】',
+  '・上記のタグが付いていない投稿は、保存も掲載もしません（読み捨てます）',
+  '・投稿者のお名前・アカウントは取得も保存もしません（サイト上は常に「非公開」）',
+  '・こちらから話しかけることはありません',
+  '',
+  '掲載したあと取り消したいときは、LINE側でその投稿を削除してください。',
+  'サイトからも自動で消えます。',
+  '',
+  '掲載してほしくない、という方はグループ内で運営までお知らせください。'
+].join('\n');
+
 /* Field aliases, so a post can say 曲 or 曲名 and still parse. */
 const FIELDS = {
   song: ['曲', '曲名'],
@@ -87,8 +107,9 @@ async function handleWebhook(request, env) {
       await handleEvent(event, env);
     } catch (err) {
       // One bad event must not cost us the rest of the batch, and LINE retries
-      // anything we answer with a non-200.
-      console.error('event failed', err);
+      // anything we answer with a non-200. Only the event type is logged —
+      // message bodies must never reach the log stream.
+      console.error('event failed', event && event.type, err && err.name);
     }
   }
 
@@ -97,9 +118,24 @@ async function handleWebhook(request, env) {
 }
 
 async function handleEvent(event, env) {
-  if (event.type !== 'message' || event.message.type !== 'text') return;
   if (event.source.type !== 'group') return;
+
+  // Introduce itself on joining, before any group has been configured.
+  if (event.type === 'join') {
+    await reply(env, event.replyToken, INTRO);
+    return;
+  }
+
   if (event.source.groupId !== env.LINE_GROUP_ID) return;
+
+  // A message deleted in LINE is withdrawn from the site too, so a post made
+  // by mistake can be taken back the ordinary way.
+  if (event.type === 'unsend') {
+    await removeEntry(env, event.unsend.messageId);
+    return;
+  }
+
+  if (event.type !== 'message' || event.message.type !== 'text') return;
 
   const text = event.message.text.trim();
 
