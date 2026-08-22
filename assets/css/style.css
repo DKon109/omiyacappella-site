@@ -1633,16 +1633,6 @@ textarea {
   white-space: pre-line;
 }
 
-.xpost__quote {
-  margin: 14px 0 0;
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  font-size: 12.5px;
-  line-height: 1.8;
-  color: var(--ink-45);
-}
-
 .xpost__media {
   margin: 16px 0 0;
   border-radius: 12px;

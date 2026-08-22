@@ -34,11 +34,7 @@
     {
       id: '2073646030047072696',
       date: '2026.07.05',
-      text: '今年から都内や埼玉で働くことになった新卒の方や異動された方等、是非一緒にアカペラしませんか？\n\n本コミュニティの規模自体はそこまで大きくないですが、その分楽しく活動しています！',
-      quote: {
-        text: '舞浜アカペラストリート／出演したバンド: おおみやの森／帰りたくなったよ・いきものがかり',
-        id: '2053350183833145686'
-      }
+      text: '今年から都内や埼玉で働くことになった新卒の方や異動された方等、是非一緒にアカペラしませんか？\n\n本コミュニティの規模自体はそこまで大きくないですが、その分楽しく活動しています！'
     },
     {
       id: '2067811327951970505',
@@ -395,12 +391,6 @@
     card.appendChild(head);
 
     card.appendChild(el('p', 'xpost__text', post.text));
-
-    if (post.quote) {
-      var quote = el('blockquote', 'xpost__quote');
-      quote.appendChild(el('p', '', post.quote.text));
-      card.appendChild(quote);
-    }
 
     if (post.image) {
       var figure = el('figure', 'xpost__media');

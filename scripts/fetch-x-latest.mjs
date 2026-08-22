@@ -106,10 +106,7 @@ async function fetchPost(id, attempts = 3) {
     at: d.created_at,
     text: clean(d.text),
     photos: (d.photos || []).map((p) => p.url),
-    video: d.video || null,
-    quote: d.quoted_tweet
-      ? { id: d.quoted_tweet.id_str, text: clean(d.quoted_tweet.text) }
-      : null
+    video: d.video || null
   };
 }
 
@@ -179,8 +176,9 @@ async function main() {
   const entries = [];
 
   for (const post of latest) {
+    /* Quoted posts are left out: the quoted tweet is often another card in
+       this same list, so it showed the same thing twice. */
     const entry = { id: post.id, date: jpDate(post.at), text: post.text };
-    if (post.quote) entry.quote = { id: post.quote.id, text: post.quote.text };
 
     if (post.photos.length) {
       const name = `${post.id}.jpg`;
