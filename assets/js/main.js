@@ -112,7 +112,7 @@
 
     // Closing the overlay on resize avoids a stuck body scroll lock.
     window.addEventListener('resize', function () {
-      if (window.innerWidth > 860) setNav(false);
+      if (window.innerWidth > 980) setNav(false);
     });
   }
 
@@ -574,11 +574,43 @@
     return ok;
   };
 
-  var required = ['f-name', 'f-email', 'f-type', 'f-message', 'f-agree']
+  var baseRequired = ['f-name', 'f-email', 'f-type', 'f-message', 'f-agree']
     .map(function (id) { return document.getElementById(id); })
     .filter(Boolean);
 
-  required.forEach(function (input) {
+  /* アカペラ歴 is only asked of people joining, so it appears — and counts as
+     required — only once that option is chosen. */
+  var JOIN_OPTION = '参加を希望する';
+  var typeField = document.getElementById('f-type');
+  var historyField = document.getElementById('f-history');
+  var historyWrap = document.getElementById('field-history');
+
+  var historyNeeded = function () {
+    return !!typeField && typeField.value === JOIN_OPTION;
+  };
+
+  var syncHistory = function () {
+    if (!historyWrap) return;
+    var on = historyNeeded();
+    historyWrap.hidden = !on;
+    if (!on) {
+      historyWrap.classList.remove('has-error');
+      historyField.value = '';
+    }
+  };
+
+  if (typeField) {
+    typeField.addEventListener('change', syncHistory);
+    syncHistory();
+  }
+
+  var activeRequired = function () {
+    return historyNeeded() && historyField
+      ? baseRequired.concat([historyField])
+      : baseRequired;
+  };
+
+  baseRequired.concat(historyField ? [historyField] : []).forEach(function (input) {
     // Only re-validate after a first failed attempt, so typing feels quiet.
     input.addEventListener('blur', function () {
       if (fieldOf(input).classList.contains('has-error')) validate(input);
@@ -597,7 +629,7 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    var results = required.map(validate);
+    var results = activeRequired().map(validate);
     if (results.indexOf(false) !== -1) {
       say('未入力または形式に誤りのある項目があります。赤く表示された項目をご確認ください。', false);
       var firstError = form.querySelector('.field.has-error input, .field.has-error select, .field.has-error textarea');

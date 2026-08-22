@@ -48,7 +48,7 @@
 
     <nav class="nav" id="nav" aria-label="メインナビゲーション">
       <ul class="nav__list">
-        <li><a class="nav__link" href="#about">プラットフォーム</a></li>
+        <li><a class="nav__link" href="#about">OMIYAcappellaとは？</a></li>
         <li><a class="nav__link" href="#gallery">ギャラリー</a></li>
         <li><a class="nav__link" href="#projects">企画募集</a></li>
         <li><a class="nav__link" href="#x">X（Twitter）</a></li>
@@ -120,7 +120,7 @@
     <div class="container">
       <header class="sec-head reveal">
         <p class="sec-head__index">01 — About</p>
-        <h2 class="sec-head__title">このプラットフォームについて</h2>
+        <h2 class="sec-head__title">OMIYAcappellaとは？</h2>
         <p class="sec-head__lead">
           OMIYAcappella は「サークル」ではありません。バンドを固定せず、練習も強制せず、
           歌いたい人が歌いたいときに集まるための<strong>「場」</strong>を提供する、大宮周辺のアカペラプラットフォームです。
@@ -222,12 +222,12 @@
 
         <div class="flow">
           <div class="flow__item reveal">
-            <h4 class="flow__title">グループで声をかける</h4>
+            <h4 class="flow__title">LINEグループで声をかける</h4>
             <p class="flow__text">「△△の曲を歌いたいのですが誰か集まりませんか？」——メンバーなら誰でも募集をかけられます。</p>
           </div>
           <div class="flow__item reveal" data-delay="1">
             <h4 class="flow__title">企画バンドが成立</h4>
-            <p class="flow__text">集まったメンバーで、一日 or 短期の企画バンドを結成。音源と楽譜を共有して各自で音取りをします。</p>
+            <p class="flow__text">集まったメンバーで、一日 or 短期の企画バンドを結成。音源と楽譜を共有して各自で練習日までに音取りをします。</p>
           </div>
           <div class="flow__item reveal" data-delay="2">
             <h4 class="flow__title">大宮周辺で練習する</h4>
@@ -537,7 +537,6 @@
         <p class="sec-head__lead">
           2022年4月から現在まで、LINEグループで実際に立ち上がった企画を新しい順に並べています。
           歌いたい曲があれば、メンバーなら誰でもこの形で募集をかけられます。
-          成立した企画も、集まらずに見送った企画も、そのまま載せています。
         </p>
       </header>
 
@@ -1556,8 +1555,8 @@ The Real Group は Words ／ Bad（Michael Jackson メドレー）から、Penta
       <div class="contact__grid">
         <aside class="contact__aside reveal">
           <p>
-            参加をご希望の場合は、アカペラ歴（所属していたサークル名・在籍年数・パートなど）を
-            添えていただけるとスムーズです。募集要項をご確認のうえ、お気軽にご連絡ください。
+            募集要項をご確認のうえ、お気軽にご連絡ください。
+            参加をご希望の場合は、アカペラ歴もあわせてお伺いします。
           </p>
 
           <div class="contact__direct">
@@ -1606,10 +1605,12 @@ The Real Group は Words ／ Bad（Michael Jackson メドレー）から、Penta
             <p class="field__error">お問い合わせ種別をお選びください。</p>
           </div>
 
-          <div class="field">
-            <label class="field__label" for="f-history">アカペラ歴<span class="field__req field__req--any">任意</span></label>
+          <!-- Shown, and required, only when 参加を希望する is selected. -->
+          <div class="field" id="field-history" hidden>
+            <label class="field__label" for="f-history">アカペラ歴<span class="field__req">必須</span></label>
             <input type="text" id="f-history" name="history" placeholder="例）大学のアカペラサークルに4年間在籍／パートはBass">
-            <p class="field__hint">参加をご希望の方は、所属していたサークル名・在籍年数・パートをご記入ください。</p>
+            <p class="field__hint">所属していたサークル名・在籍年数・パートをご記入ください。</p>
+            <p class="field__error">アカペラ歴をご入力ください。</p>
           </div>
 
           <div class="field">
@@ -1676,7 +1677,7 @@ The Real Group は Words ／ Bad（Michael Jackson メドレー）から、Penta
         <div>
           <h3>Menu</h3>
           <ul>
-            <li><a href="#about">このプラットフォームについて</a></li>
+            <li><a href="#about">OMIYAcappellaとは？</a></li>
             <li><a href="#gallery">ギャラリー</a></li>
             <li><a href="#projects">企画募集</a></li>
             <li><a href="./rules.html">活動ルール</a></li>
