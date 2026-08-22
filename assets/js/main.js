@@ -21,28 +21,36 @@
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/REDACTED@example.com';
 
   /* Newest posts shown in the X section, newest first, pinned post excluded.
-     X sunset the auto-updating profile-timeline widget (its embed now renders
-     at zero height), so the posts are listed here instead. To refresh the
-     section, replace these three entries with the latest posts.
+     Rendered from this data rather than through X's embed widget: the profile
+     timeline widget is sunset upstream, and the single-post embed has spells
+     of not responding, which would leave the section blank. Everything below
+     is served from this site, so the cards always appear.
 
-     The text is rendered immediately as a readable card; where X's embed
-     script is reachable it upgrades that card in place, adding the photos and
-     the inline video player. */
+     To refresh: replace these three entries with the latest posts, and drop
+     any new image into assets/img/. */
   var LATEST_POSTS = [
     {
       id: '2073646030047072696',
       date: '2026.07.05',
-      text: '今年から都内や埼玉で働くことになった新卒の方や異動された方等、是非一緒にアカペラしませんか？\n\n本コミュニティの規模自体はそこまで大きくないですが、その分楽しく活動しています！'
+      text: '今年から都内や埼玉で働くことになった新卒の方や異動された方等、是非一緒にアカペラしませんか？\n\n本コミュニティの規模自体はそこまで大きくないですが、その分楽しく活動しています！',
+      quote: {
+        text: '舞浜アカペラストリート／出演したバンド: おおみやの森／帰りたくなったよ・いきものがかり',
+        id: '2053350183833145686'
+      }
     },
     {
       id: '2067811327951970505',
       date: '2026.06.19',
-      text: '✍️本コミュニティに関するQ&A\n過去いただいた問い合わせをもとにこちらで情報共有致します\n\n･会費は？\n一切ありません\n\n･アカペラ以外の活動は？\n強制的な活動は一切ありませんが、BBQや飲み会は定期的に開催しています\n\n･退会は自由？\n引き止める、といったことは特にありません'
+      text: '✍️本コミュニティに関するQ&A\n過去いただいた問い合わせをもとにこちらで情報共有致します\n\n･会費は？\n一切ありません\n\n･アカペラ以外の活動は？\n強制的な活動は一切ありませんが、BBQや飲み会は定期的に開催しています\n\n･退会は自由？\n引き止める、といったことは特にありません',
+      image: './assets/img/x-qa.jpg',
+      alt: 'メンバーでのBBQのようす'
     },
     {
       id: '2053350183833145686',
       date: '2026.05.10',
-      text: '舞浜アカペラストリート\n\n出演したバンド: おおみやの森\n\n帰りたくなったよ／いきものがかり'
+      text: '舞浜アカペラストリート\n\n出演したバンド: おおみやの森\n\n帰りたくなったよ／いきものがかり\n\n#アカペラ #大宮',
+      video: './assets/video/maihama.mp4',
+      poster: './assets/img/maihama-poster.jpg'
     }
   ];
 
@@ -338,6 +346,76 @@
     });
   }
 
+  /* ------------------------------------------------------- Latest X posts */
+  var xLatest = document.getElementById('xLatest');
+
+  if (xLatest && LATEST_POSTS.length) {
+    LATEST_POSTS.forEach(function (post) {
+      xLatest.appendChild(buildPost(post));
+    });
+  }
+
+  function buildPost(post) {
+    var url = 'https://x.com/' + X_HANDLE + '/status/' + post.id;
+
+    var card = el('article', 'xpost');
+
+    var head = el('div', 'xpost__head');
+    var avatar = document.createElement('img');
+    avatar.className = 'xpost__avatar';
+    avatar.src = './assets/img/logo.jpg';
+    avatar.alt = '';
+    head.appendChild(avatar);
+    var who = el('div');
+    who.appendChild(el('p', 'xpost__name', 'OMIYAcappella'));
+    who.appendChild(el('p', 'xpost__handle', '@' + X_HANDLE));
+    head.appendChild(who);
+    card.appendChild(head);
+
+    card.appendChild(el('p', 'xpost__text', post.text));
+
+    if (post.quote) {
+      var quote = el('blockquote', 'xpost__quote');
+      quote.appendChild(el('p', '', post.quote.text));
+      card.appendChild(quote);
+    }
+
+    if (post.image) {
+      var figure = el('figure', 'xpost__media');
+      var img = document.createElement('img');
+      img.src = post.image;
+      img.alt = post.alt || '';
+      img.loading = 'lazy';
+      figure.appendChild(img);
+      card.appendChild(figure);
+    }
+
+    if (post.video) {
+      var media = el('figure', 'xpost__media');
+      var video = document.createElement('video');
+      video.src = post.video;
+      video.poster = post.poster || '';
+      video.controls = true;
+      video.preload = 'none';
+      video.playsInline = true;
+      media.appendChild(video);
+      card.appendChild(media);
+    }
+
+    var foot = el('div', 'xpost__foot');
+    foot.appendChild(el('span', 'xpost__date', post.date));
+    var link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.className = 'xpost__link';
+    link.textContent = 'Xで見る';
+    foot.appendChild(link);
+    card.appendChild(foot);
+
+    return card;
+  }
+
   /* ------------------------------------------------ Live projects feed */
   var lineTl = document.getElementById('lineTl');
 
@@ -404,14 +482,6 @@
       wrap.appendChild(el('dd', '', pair[1]));
       foot.appendChild(wrap);
     });
-
-    // Held back on purpose: the feed never carries a name or a score link.
-    var poster = document.createElement('div');
-    poster.appendChild(el('dt', '', '投稿者'));
-    var dd = document.createElement('dd');
-    dd.appendChild(el('span', 'masked', '非公開'));
-    poster.appendChild(dd);
-    foot.appendChild(poster);
 
     card.appendChild(foot);
     article.appendChild(card);

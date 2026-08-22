@@ -147,11 +147,6 @@ textarea {
   background: var(--paper-2);
 }
 
-.section--dark {
-  background: var(--ink);
-  color: var(--paper);
-}
-
 /* Section heading: "01 — ABOUT" + large JP title, echoing the numbered
    MESSAGE 01 / INTERVIEW 02 rhythm of the reference site. */
 .sec-head {
@@ -193,10 +188,6 @@ textarea {
   font-size: clamp(14px, 1.6vw, 16px);
 }
 
-.section--dark .sec-head__lead {
-  color: rgba(252, 250, 245, 0.72);
-}
-
 /* Ghost numeral floating behind each section */
 .ghost-num {
   position: absolute;
@@ -212,10 +203,6 @@ textarea {
   pointer-events: none;
   user-select: none;
   z-index: 0;
-}
-
-.section--dark .ghost-num {
-  -webkit-text-stroke-color: rgba(252, 250, 245, 0.16);
 }
 
 .section > .container {
@@ -268,17 +255,6 @@ textarea {
   background: var(--c-accent-dark);
   border-color: var(--c-accent-dark);
   color: var(--white);
-}
-
-.btn--light {
-  border-color: rgba(252, 250, 245, 0.4);
-  color: var(--paper);
-}
-
-.btn--light:hover,
-.btn--light:focus-visible {
-  background: var(--paper);
-  color: var(--ink);
 }
 
 .btn--lg {
@@ -715,48 +691,53 @@ textarea {
   background: linear-gradient(transparent 62%, var(--c-pale-yellow) 62%);
 }
 
-.pillars {
-  margin-top: clamp(50px, 7vw, 90px);
+/* Activity creed — a numbered run of rules rather than a card grid, so the
+   count is free to be six without leaving an orphan in the last row. */
+.creed {
+  margin-top: clamp(50px, 7vw, 88px);
+  border-top: 1px solid var(--line);
+}
+
+.creed__item {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 20px;
+  grid-template-columns: 4.5rem minmax(0, 17.5rem) minmax(0, 1fr);
+  gap: clamp(14px, 3vw, 40px);
+  align-items: baseline;
+  padding-block: clamp(22px, 3vw, 30px);
+  border-bottom: 1px solid var(--line);
+  transition: background 0.4s var(--ease);
 }
 
-.pillar {
-  padding: 34px 26px 30px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+.creed__item:hover {
+  background: rgba(255, 255, 255, 0.55);
 }
 
-.pillar:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 44px -30px rgba(20, 18, 15, 0.4);
+.creed__no {
+  font-family: var(--f-en);
+  font-size: clamp(20px, 2.6vw, 30px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
 }
 
-.pillar__dot {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  margin-bottom: 20px;
-}
+/* Darkened brand hues: the logo colours themselves are too light to read as
+   text on cream. */
+.creed__item:nth-child(1) .creed__no { color: #c39a12; }
+.creed__item:nth-child(2) .creed__no { color: #d2665f; }
+.creed__item:nth-child(3) .creed__no { color: #2c9077; }
+.creed__item:nth-child(4) .creed__no { color: #2f9434; }
+.creed__item:nth-child(5) .creed__no { color: var(--c-accent-dark); }
+.creed__item:nth-child(6) .creed__no { color: #5c74b0; }
 
-.pillar:nth-child(1) .pillar__dot { background: var(--c-yellow); }
-.pillar:nth-child(2) .pillar__dot { background: var(--c-coral); }
-.pillar:nth-child(3) .pillar__dot { background: var(--c-teal); }
-.pillar:nth-child(4) .pillar__dot { background: var(--c-green); }
-
-.pillar__title {
-  font-size: 18px;
+.creed__title {
+  font-size: clamp(16px, 2vw, 20px);
   font-weight: 900;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-.pillar__text {
-  margin-top: 12px;
+.creed__text {
   font-size: 13.5px;
-  line-height: 1.85;
+  line-height: 1.9;
   color: var(--ink-70);
 }
 
@@ -1532,51 +1513,13 @@ textarea {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
-  align-items: start;
+  align-items: stretch;
 }
 
-/* Styles the blockquote before widgets.js upgrades it — and if the script is
-   blocked entirely, this is what the visitor sees. */
-.tweet-grid blockquote.twitter-tweet {
-  margin: 0;
-  padding: 24px 26px;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.85;
-}
-
-.tweet-grid blockquote.twitter-tweet .tweet-date {
-  font-family: var(--f-en);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--ink-45);
-}
-
-.tweet-grid blockquote.twitter-tweet p {
-  margin: 0 0 12px;
-  white-space: pre-line;
-}
-
-.tweet-grid blockquote.twitter-tweet a {
-  color: var(--c-accent);
-  font-size: 12.5px;
-  border-bottom: 1px solid currentColor;
-}
-
-.tweet-grid twitterwidget {
-  margin: 0 auto !important;
-}
-
-/* --------------------------------------------------------------------------
-   11. X (Twitter)
-   -------------------------------------------------------------------------- */
 .x-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
 }
@@ -1589,6 +1532,11 @@ textarea {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 999px;
+  transition: border-color 0.4s var(--ease);
+}
+
+.x-account:hover {
+  border-color: var(--ink);
 }
 
 .x-account img {
@@ -1612,136 +1560,111 @@ textarea {
   color: var(--ink-45);
 }
 
-.posts {
-  margin-top: clamp(40px, 5vw, 64px);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-}
-
-.post {
+/* Self-contained post cards — no third-party script involved. */
+.xpost {
   display: flex;
   flex-direction: column;
+  padding: 24px 24px 20px;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 18px;
-  overflow: hidden;
   transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
 }
 
-.post:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 26px 48px -32px rgba(20, 18, 15, 0.45);
+.xpost:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 44px -32px rgba(20, 18, 15, 0.4);
 }
 
-.post__media {
-  aspect-ratio: 16 / 9;
-  background: var(--paper-2);
-  overflow: hidden;
-}
-
-.post__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s var(--ease);
-}
-
-.post:hover .post__media img {
-  transform: scale(1.05);
-}
-
-.post__body {
-  padding: 24px 24px 26px;
+.xpost__head {
   display: flex;
-  flex-direction: column;
-  flex: 1;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.post__date {
+.xpost__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.xpost__name {
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.xpost__handle {
   font-family: var(--f-en);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 12.5px;
   color: var(--ink-45);
 }
 
-.post__text {
-  margin-top: 10px;
+.xpost__text {
   font-size: 14px;
   line-height: 1.85;
   white-space: pre-line;
-  flex: 1;
 }
 
-.post__tags {
-  margin-top: 16px;
-  font-size: 12.5px;
-  color: var(--c-accent);
-  letter-spacing: 0.04em;
-}
-
-.post__link {
-  margin-top: 18px;
-  font-family: var(--f-en);
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  border-bottom: 1px solid currentColor;
-  align-self: flex-start;
-  padding-bottom: 2px;
-}
-
-.x-embed {
-  margin-top: clamp(40px, 5vw, 64px);
-  padding: clamp(22px, 3vw, 34px);
-  background: var(--white);
+.xpost__quote {
+  margin: 14px 0 0;
+  padding: 14px 16px;
   border: 1px solid var(--line);
-  border-radius: 18px;
-}
-
-.x-embed__label {
-  font-family: var(--f-en);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.8;
   color: var(--ink-45);
-  margin-bottom: 14px;
 }
 
-.x-embed__frame {
-  min-height: 120px;
-  max-height: 620px;
-  overflow: auto;
-  display: grid;
-  place-items: center;
+.xpost__media {
+  margin: 16px 0 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--paper-2);
+}
+
+.xpost__media img,
+.xpost__media video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.xpost__media video {
+  background: #000;
+}
+
+.xpost__foot {
+  margin-top: auto;
+  padding-top: 18px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.xpost__date,
+.xpost__link {
+  font-family: var(--f-en);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.xpost__date {
+  color: var(--ink-45);
+}
+
+.xpost__link {
+  color: var(--c-accent);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
 }
 
 /* Styles the anchor that the widget replaces, so a blocked embed still
    reads as a deliberate link rather than a broken box. */
-.x-embed__frame > .twitter-timeline {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 32px;
-  border: 1px solid var(--ink);
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.x-embed__frame > iframe {
-  justify-self: stretch;
-}
-
-.x-embed__note {
-  margin-top: 14px;
-  font-size: 12px;
-  color: var(--ink-45);
-  line-height: 1.8;
-  text-align: center;
-}
 
 /* --------------------------------------------------------------------------
    12. Contact form
@@ -2155,7 +2078,6 @@ textarea {
    15. Responsive
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
-  .pillars { grid-template-columns: repeat(2, 1fr); }
   .flow { grid-template-columns: repeat(2, 1fr); }
   .faq { grid-template-columns: 1fr; }
   .posts,
@@ -2212,14 +2134,12 @@ textarea {
   .nav__cta { margin-top: 10px; }
 
   .rule-block { grid-template-columns: 1fr; }
-  .gal-stats { grid-template-columns: 1fr 1fr; }
   .footer__nav { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 620px) {
   body { line-height: 1.85; }
   .about__body { grid-template-columns: 1fr; }
-  .pillars,
   .flow,
   .posts,
   .tweet-grid { grid-template-columns: 1fr; }
@@ -2232,6 +2152,14 @@ textarea {
   .gal-item__play { top: 38%; width: 58px; height: 58px; }
   .line-post__foot { gap: 8px 18px; }
   .hero__scroll { display: none; }
+
+  .creed__item {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 4px 16px;
+    align-items: start;
+  }
+  .creed__no { grid-row: span 2; }
+  .creed__text { margin-top: 8px; }
   .proto-flag { font-size: 9.5px; padding: 7px 12px; }
 
   /* Off the media: at this width the arrows would sit on top of the player. */
