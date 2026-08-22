@@ -499,11 +499,15 @@
   if (pastToggle) {
     var pastPosts = document.querySelectorAll('.line-post[data-state="past"]');
 
+    var closedLabel = '過去の企画を見る（' + pastPosts.length + '件）'
+      + '<span class="btn__arrow" aria-hidden="true">\u2192</span>';
+    pastToggle.innerHTML = closedLabel;
+
     pastToggle.addEventListener('click', function () {
       var open = pastToggle.getAttribute('aria-expanded') === 'true';
       pastToggle.setAttribute('aria-expanded', String(!open));
       pastToggle.innerHTML = open
-        ? '過去の企画を見る<span class="btn__arrow" aria-hidden="true">\u2192</span>'
+        ? closedLabel
         : '過去の企画を閉じる<span class="btn__arrow" aria-hidden="true">\u2191</span>';
 
       pastPosts.forEach(function (post) {
