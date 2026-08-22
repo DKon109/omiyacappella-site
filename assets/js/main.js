@@ -433,9 +433,6 @@
         entries.slice().reverse().forEach(function (entry) {
           lineTl.insertBefore(buildProject(entry), lineTl.firstElementChild);
         });
-
-        var notice = document.querySelector('#projects .notice');
-        if (notice) notice.classList.add('is-live');
       })
       .catch(function () {
         // The static entries already on the page stand in for the feed.

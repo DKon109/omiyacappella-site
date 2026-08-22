@@ -691,53 +691,60 @@ textarea {
   background: linear-gradient(transparent 62%, var(--c-pale-yellow) 62%);
 }
 
-/* Activity creed — a numbered run of rules rather than a card grid, so the
-   count is free to be six without leaving an orphan in the last row. */
+/* Activity creed — six cards, so a three-up grid fills both rows exactly.
+   The numeral sits in a logo-coloured disc, echoing the four circles. */
 .creed {
   margin-top: clamp(50px, 7vw, 88px);
-  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .creed__item {
-  display: grid;
-  grid-template-columns: 4.5rem minmax(0, 17.5rem) minmax(0, 1fr);
-  gap: clamp(14px, 3vw, 40px);
-  align-items: baseline;
-  padding-block: clamp(22px, 3vw, 30px);
-  border-bottom: 1px solid var(--line);
-  transition: background 0.4s var(--ease);
+  padding: 30px 26px 28px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
 }
 
 .creed__item:hover {
-  background: rgba(255, 255, 255, 0.55);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 44px -30px rgba(20, 18, 15, 0.4);
 }
 
 .creed__no {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
   font-family: var(--f-en);
-  font-size: clamp(20px, 2.6vw, 30px);
+  font-size: 15px;
   font-weight: 700;
-  line-height: 1;
   letter-spacing: 0.02em;
+  color: var(--ink);
 }
 
-/* Darkened brand hues: the logo colours themselves are too light to read as
-   text on cream. */
-.creed__item:nth-child(1) .creed__no { color: #c39a12; }
-.creed__item:nth-child(2) .creed__no { color: #d2665f; }
-.creed__item:nth-child(3) .creed__no { color: #2c9077; }
-.creed__item:nth-child(4) .creed__no { color: #2f9434; }
-.creed__item:nth-child(5) .creed__no { color: var(--c-accent-dark); }
-.creed__item:nth-child(6) .creed__no { color: #5c74b0; }
+/* The logo palette, cycled — dark text keeps each disc readable. */
+.creed__item:nth-child(1) .creed__no { background: var(--c-yellow); }
+.creed__item:nth-child(2) .creed__no { background: var(--c-coral); }
+.creed__item:nth-child(3) .creed__no { background: var(--c-teal); }
+.creed__item:nth-child(4) .creed__no { background: var(--c-green); }
+.creed__item:nth-child(5) .creed__no { background: var(--c-accent); }
+.creed__item:nth-child(6) .creed__no { background: var(--c-pale-blue); }
 
 .creed__title {
-  font-size: clamp(16px, 2vw, 20px);
+  font-size: 18px;
   font-weight: 900;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .creed__text {
+  margin-top: 12px;
   font-size: 13.5px;
-  line-height: 1.9;
+  line-height: 1.85;
   color: var(--ink-70);
 }
 
@@ -1310,42 +1317,6 @@ textarea {
 /* --------------------------------------------------------------------------
    10c. 企画募集 — timeline rebuilt from the LINE group
    -------------------------------------------------------------------------- */
-.notice {
-  /* Block, not flex: a flex container would split the sentence into separate
-     items at each inline tag. */
-  position: relative;
-  padding: 18px 22px 18px 58px;
-  margin-bottom: clamp(30px, 4vw, 44px);
-  border-left: 3px solid var(--c-accent);
-  border-radius: 0 12px 12px 0;
-  background: var(--white);
-  font-size: 13px;
-  line-height: 1.85;
-  color: var(--ink-70);
-}
-
-.notice strong {
-  font-weight: 900;
-  color: var(--ink);
-  background: linear-gradient(transparent 62%, var(--c-pale-yellow) 62%);
-}
-
-.notice::before {
-  content: "!";
-  position: absolute;
-  left: 22px;
-  top: 20px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--c-accent);
-  color: var(--white);
-  font-family: var(--f-en);
-  font-weight: 700;
-  font-size: 13px;
-  display: grid;
-  place-items: center;
-}
 
 .line-tl {
   position: relative;
@@ -2078,7 +2049,8 @@ textarea {
    15. Responsive
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
-  .flow { grid-template-columns: repeat(2, 1fr); }
+  .flow,
+  .creed { grid-template-columns: repeat(2, 1fr); }
   .faq { grid-template-columns: 1fr; }
   .posts,
   .tweet-grid { grid-template-columns: 1fr 1fr; }
@@ -2140,6 +2112,7 @@ textarea {
 @media (max-width: 620px) {
   body { line-height: 1.85; }
   .about__body { grid-template-columns: 1fr; }
+  .creed,
   .flow,
   .posts,
   .tweet-grid { grid-template-columns: 1fr; }
@@ -2153,13 +2126,6 @@ textarea {
   .line-post__foot { gap: 8px 18px; }
   .hero__scroll { display: none; }
 
-  .creed__item {
-    grid-template-columns: 3rem minmax(0, 1fr);
-    gap: 4px 16px;
-    align-items: start;
-  }
-  .creed__no { grid-row: span 2; }
-  .creed__text { margin-top: 8px; }
   .proto-flag { font-size: 9.5px; padding: 7px 12px; }
 
   /* Off the media: at this width the arrows would sit on top of the player. */
