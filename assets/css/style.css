@@ -571,31 +571,6 @@ textarea {
   gap: 14px;
 }
 
-.hero__meta {
-  margin-top: 52px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(24px, 4vw, 52px);
-  padding-top: 26px;
-  border-top: 1px solid var(--line);
-}
-
-.hero__meta dt {
-  font-family: var(--f-en);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-45);
-}
-
-.hero__meta dd {
-  margin: 4px 0 0;
-  font-size: clamp(17px, 2.2vw, 22px);
-  font-weight: 700;
-  line-height: 1.4;
-}
-
 .hero__visual {
   position: relative;
 }
@@ -729,13 +704,6 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.about__caption {
-  margin-top: 12px;
-  font-size: 12px;
-  color: var(--ink-45);
-  letter-spacing: 0.04em;
 }
 
 .about__text p + p {
@@ -1270,7 +1238,6 @@ textarea {
   flex-wrap: wrap;
   gap: 14px;
 }
-
 
 /* --------------------------------------------------------------------------
    10a. Sub-categories — one shared frame for every block inside About
@@ -2264,7 +2231,6 @@ textarea {
   /* Lift the play badge clear of the two-line caption on narrow screens. */
   .gal-item__play { top: 38%; width: 58px; height: 58px; }
   .line-post__foot { gap: 8px 18px; }
-  .hero__meta { gap: 22px 34px; }
   .hero__scroll { display: none; }
   .proto-flag { font-size: 9.5px; padding: 7px 12px; }
 
