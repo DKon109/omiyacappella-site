@@ -20,14 +20,16 @@
      Set this to '' to fall back to prototype mode, where nothing is sent. */
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/REDACTED@example.com';
 
-  /* Newest posts shown in the X section, newest first, pinned post excluded.
-     Rendered from this data rather than through X's embed widget: the profile
-     timeline widget is sunset upstream, and the single-post embed has spells
-     of not responding, which would leave the section blank. Everything below
-     is served from this site, so the cards always appear.
+  /* Written daily by .github/workflows/x-latest.yml. When it is present the X
+     section renders from it; the entries below stand in until then, and again
+     if the file ever fails to load. */
+  var X_FEED = './assets/data/x-latest.json';
 
-     To refresh: replace these three entries with the latest posts, and drop
-     any new image into assets/img/. */
+  /* Fallback posts, newest first, pinned post excluded. Rendered as our own
+     cards rather than through X's embed widget: the profile timeline widget is
+     sunset upstream, and the single-post embed has spells of not responding,
+     which would leave the section blank. Everything here is served from this
+     site, so the cards always appear. */
   var LATEST_POSTS = [
     {
       id: '2073646030047072696',
@@ -349,8 +351,28 @@
   /* ------------------------------------------------------- Latest X posts */
   var xLatest = document.getElementById('xLatest');
 
-  if (xLatest && LATEST_POSTS.length) {
-    LATEST_POSTS.forEach(function (post) {
+  if (xLatest) {
+    renderPosts(LATEST_POSTS);
+
+    // Swap in the scheduled feed once it arrives, so the section is never empty
+    // while waiting on it.
+    fetch(X_FEED, { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        var entries = (data && data.entries) || [];
+        if (entries.length) renderPosts(entries);
+      })
+      .catch(function () {
+        // The built-in posts are already on screen.
+      });
+  }
+
+  function renderPosts(posts) {
+    while (xLatest.firstChild) xLatest.removeChild(xLatest.firstChild);
+    posts.forEach(function (post) {
       xLatest.appendChild(buildPost(post));
     });
   }
@@ -400,6 +422,20 @@
       video.playsInline = true;
       media.appendChild(video);
       card.appendChild(media);
+    } else if (post.poster) {
+      // The clip was too large to carry, so the still links out to X.
+      var still = document.createElement('a');
+      still.className = 'xpost__media xpost__media--link';
+      still.href = url;
+      still.target = '_blank';
+      still.rel = 'noopener';
+      var shot = document.createElement('img');
+      shot.src = post.poster;
+      shot.alt = post.alt || '';
+      shot.loading = 'lazy';
+      still.appendChild(shot);
+      still.appendChild(el('span', 'xpost__play'));
+      card.appendChild(still);
     }
 
     var foot = el('div', 'xpost__foot');
