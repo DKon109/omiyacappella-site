@@ -295,6 +295,12 @@ textarea {
 .deco--blue { background: var(--c-pale-blue); opacity: 0.55; }
 .deco--yellow { background: var(--c-pale-yellow); opacity: 0.75; }
 
+/* Several separators are emoji-presentation by default on phone fonts, where
+   they turn coloured and outsized. VS15 pins them to the text glyph. */
+.text-glyph {
+  font-variant-emoji: text;
+}
+
 /* Four brand circles, reused in loader / hero / footer */
 .circles {
   display: flex;
@@ -650,8 +656,11 @@ textarea {
 }
 
 .marquee__track span::after {
-  content: "✳";
+  /* U+2733 followed by VS15: without it iOS and Android render the asterisk as
+     a colour emoji. */
+  content: "\2733 \FE0E ";
   color: var(--c-accent);
+  font-variant-emoji: text;
 }
 
 @keyframes marquee {
