@@ -23,7 +23,14 @@ import { mkdir, readFile, writeFile, readdir, unlink } from 'node:fs/promises';
 import path from 'node:path';
 
 const HANDLE = 'OMIYAacappella';
+
+/* At most three cards, but the section is worth showing with fewer. */
 const WANTED = 3;
+const MIN_POSTS = 1;
+
+/* Ids listed here are skipped. Empty: the section shows whatever the account
+   posted most recently, minus the pin. */
+const EXCLUDE_IDS = new Set([]);
 const OUT_JSON = 'assets/data/x-latest.json';
 const MEDIA_DIR = 'assets/data/x-media';
 
@@ -78,7 +85,8 @@ async function collectStatusIds() {
     }, HANDLE);
 
     const pinned = new Set(seen.filter((s) => s.pinned).map((s) => s.id));
-    const ids = [...new Set(seen.map((s) => s.id))].filter((id) => !pinned.has(id));
+    const ids = [...new Set(seen.map((s) => s.id))]
+      .filter((id) => !pinned.has(id) && !EXCLUDE_IDS.has(id));
 
     return ids;
   } finally {
@@ -106,7 +114,10 @@ async function fetchPost(id, attempts = 3) {
     at: d.created_at,
     text: clean(d.text),
     photos: (d.photos || []).map((p) => p.url),
-    video: d.video || null
+    video: d.video || null,
+    quote: d.quoted_tweet
+      ? { id: d.quoted_tweet.id_str, text: clean(d.quoted_tweet.text) }
+      : null
   };
 }
 
@@ -147,9 +158,9 @@ function jpDate(iso) {
 
 async function main() {
   const ids = await collectStatusIds();
-  console.log(`unpinned status ids on the profile: ${ids.length}`);
-  if (ids.length < WANTED) {
-    throw new Error(`profile yielded ${ids.length} ids, wanted ${WANTED}`);
+  console.log(`eligible status ids on the profile: ${ids.length}`);
+  if (ids.length < MIN_POSTS) {
+    throw new Error(`profile yielded ${ids.length} ids`);
   }
 
   const posts = [];
@@ -167,8 +178,8 @@ async function main() {
     .sort((a, b) => new Date(b.at) - new Date(a.at))
     .slice(0, WANTED);
 
-  if (latest.length < WANTED) {
-    throw new Error(`only ${latest.length} posts resolved, wanted ${WANTED}`);
+  if (latest.length < MIN_POSTS) {
+    throw new Error(`only ${latest.length} posts resolved`);
   }
 
   await mkdir(MEDIA_DIR, { recursive: true });
@@ -176,9 +187,8 @@ async function main() {
   const entries = [];
 
   for (const post of latest) {
-    /* Quoted posts are left out: the quoted tweet is often another card in
-       this same list, so it showed the same thing twice. */
     const entry = { id: post.id, date: jpDate(post.at), text: post.text };
+    if (post.quote) entry.quote = { id: post.quote.id, text: post.quote.text };
 
     if (post.photos.length) {
       const name = `${post.id}.jpg`;

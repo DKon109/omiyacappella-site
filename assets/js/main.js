@@ -392,6 +392,12 @@
 
     card.appendChild(el('p', 'xpost__text', post.text));
 
+    if (post.quote) {
+      var quote = el('blockquote', 'xpost__quote');
+      quote.appendChild(el('p', '', post.quote.text));
+      card.appendChild(quote);
+    }
+
     if (post.image) {
       var figure = el('figure', 'xpost__media');
       var img = document.createElement('img');
