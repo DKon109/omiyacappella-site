@@ -19,7 +19,7 @@ NAV = [
     ("about.html", "OMIYAcappellaとは？"),
     ("gallery.html", "ギャラリー"),
     ("projects.html", "企画一覧"),
-    ("x.html", "X（Twitter）"),
+    ("index.html#x", "X（Twitter）"),
 ]
 
 FONTS = (
@@ -174,24 +174,26 @@ def write(name, title, description, body, extra=""):
 
 def home_cards():
     entries = [
-        ("about.html", "01", "OMIYAcappellaとは？",
+        ("about.html", "01", "About", "OMIYAcappellaとは？",
          "6つの決まりごと、参加までの流れ、募集要項、活動ルール。"),
-        ("gallery.html", "02", "ギャラリー",
+        ("gallery.html", "02", "Gallery", "ギャラリー",
          "イベント出演時の演奏動画と、企画バンドの音源。"),
-        ("projects.html", "03", "企画一覧",
+        ("projects.html", "03", "Projects", "企画一覧",
          "2022年からLINEグループで立ち上がった企画。"),
-        ("x.html", "04", "Xでの発信",
-         "最新の企画情報やイベント出演の様子。"),
-        ("contact.html", "05", "お問い合わせ",
+        ("contact.html", "04", "Contact", "お問い合わせ",
          "参加のご希望、ご質問、イベント出演のご相談はこちらから。"),
     ]
     cards = []
-    for href, no, title, text in entries:
+    for href, no, en, title, text in entries:
         cards.append(f"""        <a class="portal__card reveal" href="./{href}">
-          <p class="portal__no">{no}</p>
+          <span class="portal__ghost" aria-hidden="true">{no}</span>
+          <p class="portal__en">{en}</p>
           <h3 class="portal__title">{title}</h3>
           <p class="portal__text">{text}</p>
-          <span class="portal__arrow" aria-hidden="true">→</span>
+          <span class="portal__go">
+            <span class="portal__rule" aria-hidden="true"></span>
+            <span class="portal__arrow" aria-hidden="true">→</span>
+          </span>
         </a>""")
     return "\n".join(cards)
 
@@ -216,7 +218,9 @@ write(
       </div>
     </div>
   </section>
-
+"""
+    + part("x")
+    + """
   <!-- ====================== 参加 ====================== -->
   <section class="section">
     <div class="container">
@@ -278,20 +282,6 @@ write(
         "企画一覧",
     )
     + unwrap(part("projects")),
-)
-
-write(
-    "x.html",
-    "Xでの発信｜OMIYAcappella",
-    "最新の企画情報やイベント出演の様子は X（旧Twitter）で発信しています。直近の投稿3件を掲載しています。",
-    page_hero(
-        "X / Twitter",
-        "Xでの発信",
-        "最新の企画情報やイベント出演の様子は X（旧Twitter）で発信しています。"
-        "参加のご相談はDMでも受け付けています。",
-        "Xでの発信",
-    )
-    + unwrap(part("x")),
 )
 
 write(

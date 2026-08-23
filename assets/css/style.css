@@ -763,64 +763,136 @@ textarea {
    -------------------------------------------------------------------------- */
 .portal {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-}
-
-/* Five cards over a three-up grid leaves an orphan, so the first one takes two
-   columns and both rows come out full. */
-.portal__card:first-child {
-  grid-column: span 2;
 }
 
 .portal__card {
   position: relative;
-  display: block;
-  padding: 32px 28px 64px;
+  display: flex;
+  flex-direction: column;
+  min-height: 260px;
+  padding: clamp(30px, 3.4vw, 44px);
+  overflow: hidden;
   background: var(--white);
   border: 1px solid var(--line);
-  border-radius: 18px;
-  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease),
-    border-color 0.5s var(--ease);
+  border-radius: 20px;
+  isolation: isolate;
+  transition: transform 0.55s var(--ease), box-shadow 0.55s var(--ease),
+    border-color 0.55s var(--ease);
 }
+
+/* One logo colour each, as a rule along the top and a wash that rises on hover. */
+.portal__card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--portal-tone, var(--c-accent));
+  transition: height 0.55s var(--ease);
+}
+
+.portal__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--portal-tone, var(--c-accent)) 16%, transparent),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.55s var(--ease);
+}
+
+.portal__card:nth-child(1) { --portal-tone: var(--c-yellow); }
+.portal__card:nth-child(2) { --portal-tone: var(--c-coral); }
+.portal__card:nth-child(3) { --portal-tone: var(--c-teal); }
+.portal__card:nth-child(4) { --portal-tone: var(--c-green); }
 
 .portal__card:hover,
 .portal__card:focus-visible {
   transform: translateY(-6px);
   border-color: var(--ink);
-  box-shadow: 0 26px 48px -32px rgba(20, 18, 15, 0.45);
+  box-shadow: 0 30px 56px -34px rgba(20, 18, 15, 0.45);
 }
 
-.portal__no {
+.portal__card:hover::before,
+.portal__card:focus-visible::before {
+  height: 7px;
+}
+
+.portal__card:hover::after,
+.portal__card:focus-visible::after {
+  opacity: 1;
+}
+
+/* The numeral belongs to the page furniture, echoing the section ghosts. */
+.portal__ghost {
+  position: absolute;
+  top: -14px;
+  right: 10px;
+  z-index: -1;
+  font-family: var(--f-en);
+  font-size: clamp(96px, 11vw, 150px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line);
+  user-select: none;
+}
+
+.portal__en {
   font-family: var(--f-en);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--c-accent);
 }
 
 .portal__title {
   margin-top: 12px;
-  font-size: clamp(18px, 2.2vw, 22px);
+  font-size: clamp(21px, 2.6vw, 28px);
   font-weight: 900;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .portal__text {
-  margin-top: 12px;
+  margin-top: 14px;
+  max-width: 26em;
   font-size: 13.5px;
-  line-height: 1.85;
+  line-height: 1.9;
   color: var(--ink-70);
 }
 
+.portal__go {
+  margin-top: auto;
+  padding-top: 26px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.portal__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  transform-origin: left;
+  transition: background 0.55s var(--ease);
+}
+
+.portal__card:hover .portal__rule {
+  background: var(--ink);
+}
+
 .portal__arrow {
-  position: absolute;
-  left: 28px;
-  bottom: 28px;
   font-family: var(--f-en);
-  font-size: 18px;
-  color: var(--c-accent);
-  transition: transform 0.4s var(--ease);
+  font-size: 20px;
+  color: var(--ink);
+  transition: transform 0.45s var(--ease);
 }
 
 .portal__card:hover .portal__arrow {
@@ -2249,7 +2321,6 @@ textarea {
 @media (max-width: 1024px) {
   .flow,
   .creed { grid-template-columns: repeat(2, 1fr); }
-  .portal { grid-template-columns: repeat(2, 1fr); }
   .faq { grid-template-columns: 1fr; }
   .posts,
   .tweet-grid { grid-template-columns: 1fr 1fr; }
@@ -2334,7 +2405,7 @@ textarea {
   .posts,
   .portal,
   .tweet-grid { grid-template-columns: 1fr; }
-  .portal__card:first-child { grid-column: auto; }
+  .portal__card { min-height: 0; }
   .gal-grid { grid-template-columns: 1fr; }
   .gal-item--wide { grid-column: auto; }
   .gal-item { aspect-ratio: 4 / 3; }
