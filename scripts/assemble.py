@@ -19,7 +19,7 @@ NAV = [
     ("about.html", "OMIYAcappellaとは？"),
     ("gallery.html", "ギャラリー"),
     ("projects.html", "企画一覧"),
-    ("index.html#x", "X（Twitter）"),
+    ("x.html", "X（Twitter）"),
 ]
 
 FONTS = (
@@ -172,26 +172,17 @@ def write(name, title, description, body, extra=""):
     print(f"{name:16s} {len(html):>7} bytes")
 
 
-def latest_projects(count=3):
-    """The newest few cards, lifted out of the projects page for the home page."""
-    src = part("projects")
-    cards = re.findall(r'        <article class="line-post.*?</article>\n', src, flags=re.S)
-    picked = []
-    for card in cards[:count]:
-        card = card.replace(" is-collapsed", "")
-        picked.append(card)
-    return "".join(picked)
-
-
 def home_cards():
     entries = [
         ("about.html", "01", "OMIYAcappellaとは？",
          "6つの決まりごと、参加までの流れ、募集要項、活動ルール。"),
         ("gallery.html", "02", "ギャラリー",
-         "イベント出演時の演奏動画と、企画バンドの音源。全14本。"),
+         "イベント出演時の演奏動画と、企画バンドの音源。"),
         ("projects.html", "03", "企画一覧",
-         "2022年からLINEグループで立ち上がった企画、全38件。"),
-        ("contact.html", "04", "お問い合わせ",
+         "2022年からLINEグループで立ち上がった企画。"),
+        ("x.html", "04", "Xでの発信",
+         "最新の企画情報やイベント出演の様子。"),
+        ("contact.html", "05", "お問い合わせ",
          "参加のご希望、ご質問、イベント出演のご相談はこちらから。"),
     ]
     cards = []
@@ -212,17 +203,12 @@ write(
     "OMIYAcappella｜大宮アカペラプラットフォーム",
     "「楽しく、いつでも、アカペラを、大宮で」。固定バンドを組まずに、一日 or 短期の企画バンドを自由につくれる、アカペラ経験者限定のプラットフォームです。",
     part("hero")
-    + part("marquee")
     + f"""
-  <!-- ====================== 入口 ====================== -->
+  <!-- ====================== MENU ====================== -->
   <section class="section">
     <div class="container">
       <header class="sec-head reveal">
-        <p class="sec-head__index">Menu</p>
-        <h2 class="sec-head__title">はじめての方へ</h2>
-        <p class="sec-head__lead">
-          知りたいところから、どうぞ。
-        </p>
+        <h2 class="sec-head__title">MENU</h2>
       </header>
 
       <div class="portal">
@@ -231,28 +217,6 @@ write(
     </div>
   </section>
 
-  <!-- ====================== 最新の企画 ====================== -->
-  <section class="section section--tint">
-    <div class="container">
-      <header class="sec-head reveal">
-        <p class="sec-head__index">Latest</p>
-        <h2 class="sec-head__title">最近の企画</h2>
-        <p class="sec-head__lead">
-          歌いたい曲があれば、メンバーなら誰でもこの形で募集をかけられます。
-        </p>
-      </header>
-
-      <div class="line-tl">
-{latest_projects()}      </div>
-
-      <div class="line-cta reveal">
-        <a class="btn" href="./projects.html">企画一覧をすべて見る<span class="btn__arrow" aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
-"""
-    + part("x")
-    + """
   <!-- ====================== 参加 ====================== -->
   <section class="section">
     <div class="container">
@@ -269,7 +233,8 @@ write(
       </div>
     </div>
   </section>
-""",
+"""
+    + part("marquee"),
 )
 
 write(
@@ -313,6 +278,20 @@ write(
         "企画一覧",
     )
     + unwrap(part("projects")),
+)
+
+write(
+    "x.html",
+    "Xでの発信｜OMIYAcappella",
+    "最新の企画情報やイベント出演の様子は X（旧Twitter）で発信しています。直近の投稿3件を掲載しています。",
+    page_hero(
+        "X / Twitter",
+        "Xでの発信",
+        "最新の企画情報やイベント出演の様子は X（旧Twitter）で発信しています。"
+        "参加のご相談はDMでも受け付けています。",
+        "Xでの発信",
+    )
+    + unwrap(part("x")),
 )
 
 write(

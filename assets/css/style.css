@@ -632,7 +632,7 @@ textarea {
    7. Marquee band
    -------------------------------------------------------------------------- */
 .marquee {
-  padding-block: 22px;
+  padding-block: 26px;
   background: var(--ink);
   color: var(--paper);
   overflow: hidden;
@@ -763,8 +763,14 @@ textarea {
    -------------------------------------------------------------------------- */
 .portal {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+}
+
+/* Five cards over a three-up grid leaves an orphan, so the first one takes two
+   columns and both rows come out full. */
+.portal__card:first-child {
+  grid-column: span 2;
 }
 
 .portal__card {
@@ -821,12 +827,16 @@ textarea {
   transform: translateX(6px);
 }
 
-/* Closing invitation */
+/* Closing invitation — warm cream so it settles into the page rather than
+   competing with the footer. */
 .join {
   padding: clamp(40px, 6vw, 76px) clamp(28px, 5vw, 64px);
   border-radius: 24px;
-  background: var(--ink);
-  color: var(--paper);
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(120% 140% at 12% 0%, rgba(242, 201, 59, 0.16), transparent 58%),
+    radial-gradient(100% 120% at 92% 100%, rgba(67, 191, 160, 0.14), transparent 60%),
+    var(--paper-2);
   text-align: center;
 }
 
@@ -840,7 +850,7 @@ textarea {
   margin: 20px auto 0;
   max-width: 34em;
   font-size: 14.5px;
-  color: rgba(252, 250, 245, 0.72);
+  color: var(--ink-70);
 }
 
 .join__actions {
@@ -851,15 +861,7 @@ textarea {
   justify-content: center;
 }
 
-.join__actions .btn:not(.btn--accent) {
-  border-color: rgba(252, 250, 245, 0.4);
-  color: var(--paper);
-}
 
-.join__actions .btn:not(.btn--accent):hover {
-  background: var(--paper);
-  color: var(--ink);
-}
 
 /* --------------------------------------------------------------------------
    9. Gallery
@@ -2247,6 +2249,7 @@ textarea {
 @media (max-width: 1024px) {
   .flow,
   .creed { grid-template-columns: repeat(2, 1fr); }
+  .portal { grid-template-columns: repeat(2, 1fr); }
   .faq { grid-template-columns: 1fr; }
   .posts,
   .tweet-grid { grid-template-columns: 1fr 1fr; }
@@ -2329,7 +2332,9 @@ textarea {
   .creed,
   .flow,
   .posts,
+  .portal,
   .tweet-grid { grid-template-columns: 1fr; }
+  .portal__card:first-child { grid-column: auto; }
   .gal-grid { grid-template-columns: 1fr; }
   .gal-item--wide { grid-column: auto; }
   .gal-item { aspect-ratio: 4 / 3; }
