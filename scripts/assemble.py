@@ -9,6 +9,7 @@ rewritten.
     python3 scripts/assemble.py
 """
 
+import json
 import re
 from pathlib import Path
 
@@ -22,19 +23,79 @@ NAV = [
     ("index.html#x", "X（Twitter）"),
 ]
 
+# Every absolute url the site emits — canonical tags, og:url, the sitemap and
+# the structured data — is built from this. It MUST match the url the site is
+# actually served from: a canonical pointing at a host that does not exist tells
+# Google to index nothing. Change it here and re-run before deploying elsewhere.
+SITE_URL = "https://omiya.acappella.workers.dev"
+
 FONTS = (
     'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800'
     '&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap'
 )
 
 
+WRITTEN = []
+
+
+def structured_data():
+    """Tells Google in so many words what this is and where it happens.
+
+    Only the home page carries it: it describes the organisation, not the page,
+    and repeating it on every url would just claim five organisations.
+    """
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": f"{SITE_URL}/#organization",
+        "name": "OMIYAcappella",
+        "alternateName": ["大宮アカペラプラットフォーム", "OMIYAcappella 大宮アカペラプラットフォーム"],
+        "url": f"{SITE_URL}/",
+        "logo": f"{SITE_URL}/assets/img/logo.jpg",
+        "image": f"{SITE_URL}/assets/img/maihama-poster.jpg",
+        "description": (
+            "埼玉・大宮周辺の社会人アカペラコミュニティ。サークルのように固定バンドを組まず、"
+            "一日 or 短期の企画バンドを自由につくれる、アカペラ経験者限定のプラットフォームです。"
+        ),
+        "sameAs": ["https://x.com/OMIYAacappella"],
+        "knowsAbout": ["アカペラ", "ボーカルアンサンブル"],
+        # No street address is claimed: the group books studios around 大宮
+        # rather than holding premises of its own.
+        "areaServed": [
+            {"@type": "AdministrativeArea", "name": "埼玉県"},
+            {"@type": "City", "name": "さいたま市大宮区"},
+        ],
+        "location": {
+            "@type": "Place",
+            "name": "大宮周辺",
+            "address": {
+                "@type": "PostalAddress",
+                "addressRegion": "埼玉県",
+                "addressLocality": "さいたま市",
+                "addressCountry": "JP",
+            },
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "参加申し込み・お問い合わせ",
+            "url": f"{SITE_URL}/contact.html",
+            "availableLanguage": ["ja"],
+        },
+    }
+    body = json.dumps(data, ensure_ascii=False, indent=2)
+    return f'\n<script type="application/ld+json">\n{body}\n</script>\n'
+
+
 def part(name):
     return (PARTS / f"{name}.html").read_text(encoding="utf-8").rstrip() + "\n"
 
 
-def head(title, description, page):
+def head(title, description, page, structured=""):
     """`page` marks which nav entry is the current one."""
-    og_image = "./assets/img/maihama-poster.jpg"
+    # Crawlers and the services that unfurl links do not resolve relative urls,
+    # so these two are the exception to the site's relative-path rule.
+    canonical = f"{SITE_URL}/" if page == "index.html" else f"{SITE_URL}/{page}"
+    og_image = f"{SITE_URL}/assets/img/maihama-poster.jpg"
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -44,7 +105,10 @@ def head(title, description, page):
 <meta name="description" content="{description}">
 <meta name="theme-color" content="#fcfaf5">
 
+<link rel="canonical" href="{canonical}">
+
 <meta property="og:type" content="website">
+<meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="OMIYAcappella 大宮アカペラプラットフォーム">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
@@ -59,7 +123,7 @@ def head(title, description, page):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{FONTS}" rel="stylesheet">
 <link rel="stylesheet" href="./assets/css/style.css">
-</head>
+{structured}</head>
 
 <body>
 """
@@ -151,9 +215,9 @@ def unwrap(html):
     return '  <section class="section">\n' + html + "  </section>\n"
 
 
-def write(name, title, description, body, extra=""):
+def write(name, title, description, body, extra="", structured=""):
     html = (
-        head(title, description, name)
+        head(title, description, name, structured)
         + (loader() if name == "index.html" else "")
         + header(name)
         + "\n<main"
@@ -169,6 +233,7 @@ def write(name, title, description, body, extra=""):
         + "</body>\n</html>\n"
     )
     (ROOT / name).write_text(html, encoding="utf-8")
+    WRITTEN.append(name)
     print(f"{name:16s} {len(html):>7} bytes")
 
 
@@ -243,6 +308,7 @@ write(
   </section>
 """
     + part("marquee"),
+    structured=structured_data(),
 )
 
 write(
@@ -301,3 +367,37 @@ write(
     )
     + unwrap(part("contact")),
 )
+
+
+# ------------------------------------------------------------------ crawling
+
+def write_sitemap():
+    """No <lastmod>: a build-time date would say every page changed whenever the
+    script ran, which is worse than saying nothing."""
+    urls = "\n".join(
+        f"  <url><loc>{SITE_URL}/{'' if name == 'index.html' else name}</loc></url>"
+        for name in WRITTEN + ["rules.html"]
+    )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls}\n"
+        "</urlset>\n"
+    )
+    (ROOT / "sitemap.xml").write_text(xml, encoding="utf-8")
+    print(f"{'sitemap.xml':16s} {len(xml):>7} bytes")
+
+
+def write_robots():
+    txt = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "\n"
+        f"Sitemap: {SITE_URL}/sitemap.xml\n"
+    )
+    (ROOT / "robots.txt").write_text(txt, encoding="utf-8")
+    print(f"{'robots.txt':16s} {len(txt):>7} bytes")
+
+
+write_sitemap()
+write_robots()

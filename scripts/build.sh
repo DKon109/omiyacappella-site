@@ -10,6 +10,7 @@ rm -rf dist
 mkdir -p dist
 
 cp index.html about.html gallery.html projects.html contact.html rules.html dist/
+cp robots.txt sitemap.xml dist/
 cp -R assets dist/
 cp scripts/_headers dist/_headers
 
