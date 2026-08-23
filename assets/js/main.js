@@ -18,7 +18,14 @@
   /* Written daily by .github/workflows/x-latest.yml. When it is present the X
      section renders from it; the entries below stand in until then, and again
      if the file ever fails to load. */
-  var X_FEED = './assets/data/x-latest.json';
+  var X_FEED = '/assets/data/x-latest.json';
+
+  /* Paths in the feed and in LATEST_POSTS are written relative to the site
+     root, which is where the Japanese pages live. The English pages are a
+     directory down, so anything starting './' has to be anchored. */
+  function asset(path) {
+    return typeof path === 'string' ? path.replace(/^\.\//, '/') : path;
+  }
 
   /* Fallback posts, newest first, pinned post excluded. Rendered as our own
      cards rather than through X's embed widget: the profile timeline widget is
@@ -376,7 +383,7 @@
     var head = el('div', 'xpost__head');
     var avatar = document.createElement('img');
     avatar.className = 'xpost__avatar';
-    avatar.src = './assets/img/logo.jpg';
+    avatar.src = asset('./assets/img/logo.jpg');
     avatar.alt = '';
     head.appendChild(avatar);
     var who = el('div');
@@ -396,7 +403,7 @@
     if (post.image) {
       var figure = el('figure', 'xpost__media');
       var img = document.createElement('img');
-      img.src = post.image;
+      img.src = asset(post.image);
       img.alt = post.alt || '';
       img.loading = 'lazy';
       figure.appendChild(img);
@@ -406,8 +413,8 @@
     if (post.video) {
       var media = el('figure', 'xpost__media');
       var video = document.createElement('video');
-      video.src = post.video;
-      video.poster = post.poster || '';
+      video.src = asset(post.video);
+      video.poster = asset(post.poster) || '';
       video.controls = true;
       video.preload = 'none';
       video.playsInline = true;
@@ -421,7 +428,7 @@
       still.target = '_blank';
       still.rel = 'noopener';
       var shot = document.createElement('img');
-      shot.src = post.poster;
+      shot.src = asset(post.poster);
       shot.alt = post.alt || '';
       shot.loading = 'lazy';
       still.appendChild(shot);
@@ -552,6 +559,21 @@
   if (!form) return;
 
   var status = document.getElementById('formStatus');
+
+  /* The English pages are the same markup with the same ids, so the only thing
+     that has to vary at runtime is the wording. */
+  var EN = document.documentElement.lang === 'en';
+  var SAY = EN ? {
+    dry: 'Your entries check out. Nothing was actually sent — no destination is configured yet.',
+    sending: 'Sending…',
+    sent: 'Sent. The organisers have been notified by email; please allow a little time for a reply.',
+    failed: 'That did not go through. Please check your connection and try again.'
+  } : {
+    dry: '入力内容の確認が完了しました。※ 送信先が未設定のため、実際の送信は行われていません。',
+    sending: '送信しています…',
+    sent: '送信しました。運営にメールで通知が届きます。折り返しのご連絡までしばらくお待ちください。',
+    failed: '送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。'
+  };
   var submitBtn = form.querySelector('.form__submit');
   var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -575,7 +597,6 @@
 
   /* These are asked only of people joining, so they appear — and the first two
      count as required — only once that option is chosen. */
-  var JOIN_OPTION = '参加を希望する';
   var typeField = document.getElementById('f-type');
 
   var joinFields = [
@@ -602,7 +623,11 @@
     .filter(function (spec) { return spec.wrap && (spec.input || spec.boxes); });
 
   var joining = function () {
-    return !!typeField && typeField.value === JOIN_OPTION;
+    /* Marked in the markup rather than matched by name: the English page
+       offers the same choice worded differently. */
+    if (!typeField) return false;
+    var picked = typeField.options[typeField.selectedIndex];
+    return !!picked && picked.getAttribute('data-join') === '1';
   };
 
   var syncJoinFields = function () {
@@ -667,7 +692,7 @@
     }
 
     if (!FORM_ENDPOINT) {
-      say('入力内容の確認が完了しました。※ 送信先が未設定のため、実際の送信は行われていません。', true);
+      say(SAY.dry, true);
       return;
     }
 
@@ -677,7 +702,7 @@
     data.append('_captcha', 'false');
 
     submitBtn.disabled = true;
-    say('送信しています…', false);
+    say(SAY.sending, false);
 
     fetch(FORM_ENDPOINT, {
       method: 'POST',
@@ -690,11 +715,11 @@
       })
       .then(function () {
         form.reset();
-        say('送信しました。運営にメールで通知が届きます。折り返しのご連絡までしばらくお待ちください。', true);
+        say(SAY.sent, true);
       })
       .catch(function () {
         say(
-          '送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。'
+          SAY.failed
           + '解決しない場合は X（@OMIYAacappella）のDMからご連絡ください。',
           false
         );

@@ -443,6 +443,52 @@ textarea {
   font-size: 13px;
 }
 
+/* Language switch — both options always visible, so the reader can see the
+   other one exists rather than having to guess it does. */
+.u-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.lang__opt {
+  font-family: var(--f-en);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  transition: color 0.3s var(--ease);
+}
+
+.lang__opt:hover { color: var(--ink); }
+
+.lang__opt.is-current {
+  color: var(--ink);
+  cursor: default;
+}
+
+.lang__sep {
+  width: 1px;
+  height: 11px;
+  background: var(--line);
+}
+
 .nav-toggle {
   display: none;
   width: 46px;
@@ -2470,6 +2516,11 @@ textarea {
   }
 
   .nav__cta { margin-top: 10px; }
+
+  .nav__lang { margin-top: 4px; }
+  .lang { padding: 9px 18px; gap: 12px; }
+  .lang__opt { font-size: 14px; }
+  .lang__sep { height: 14px; }
 
   .rule-block { grid-template-columns: 1fr; }
   .footer__nav { grid-template-columns: 1fr 1fr; }

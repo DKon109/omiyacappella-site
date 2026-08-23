@@ -8,6 +8,9 @@
 <meta name="theme-color" content="#fcfaf5">
 
 <link rel="canonical" href="https://omiya.acappella.workers.dev/contact.html">
+<link rel="alternate" hreflang="ja" href="https://omiya.acappella.workers.dev/contact.html">
+<link rel="alternate" hreflang="en" href="https://omiya.acappella.workers.dev/en/contact.html">
+<link rel="alternate" hreflang="x-default" href="https://omiya.acappella.workers.dev/contact.html">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://omiya.acappella.workers.dev/contact.html">
@@ -15,6 +18,7 @@
 <meta property="og:title" content="参加申し込み・お問い合わせ｜埼玉・大宮の社会人アカペラ">
 <meta property="og:description" content="埼玉・大宮周辺の社会人アカペラ OMIYAcappella への参加申し込み・お問い合わせ。ご質問やイベント出演のご相談もこちらから。順次ご返信します。">
 <meta property="og:image" content="https://omiya.acappella.workers.dev/assets/img/maihama-poster.jpg">
+<meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@OMIYAacappella">
 
@@ -48,6 +52,7 @@
         <li><a class="nav__link" href="./projects.html">企画一覧</a></li>
         <li><a class="nav__link" href="./index.html#x">X（Twitter）</a></li>
         <li><a class="btn nav__cta is-current" href="./contact.html">お問い合わせ<span class="btn__arrow" aria-hidden="true">→</span></a></li>
+        <li class="nav__lang"><span class="lang" role="group" aria-label="Language"><a class="lang__opt is-current" href="./contact.html" hreflang="ja" lang="ja" aria-current="true"><span class="u-sr">日本語</span><span aria-hidden="true">JA</span></a><span class="lang__sep" aria-hidden="true"></span><a class="lang__opt" href="./en/contact.html" hreflang="en" lang="en"><span class="u-sr">English</span><span aria-hidden="true">EN</span></a></span></li>
       </ul>
     </nav>
   </div>
@@ -114,7 +119,7 @@
             <label class="field__label" for="f-type">お問い合わせ種別<span class="field__req">必須</span></label>
             <select id="f-type" name="type">
               <option value="">選択してください</option>
-              <option>参加を希望する</option>
+              <option data-join="1">参加を希望する</option>
               <option>活動内容についての質問</option>
               <option>イベント出演・共催のご相談</option>
               <option>取材・掲載のご依頼</option>

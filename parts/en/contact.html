@@ -1,0 +1,207 @@
+  <!-- ====================== 05 CONTACT ====================== -->
+  <section class="section" id="contact">
+    <span class="ghost-num" aria-hidden="true">05</span>
+
+    <div class="container">
+      <header class="sec-head reveal">
+        <p class="sec-head__index">05 — Contact</p>
+        <h2 class="sec-head__title">Contact form</h2>
+        <p class="sec-head__lead">
+          To join us, to ask a question, or to invite us to your event.
+          Your message reaches the organisers by email, and we reply in turn.
+        </p>
+      </header>
+
+      <div class="contact__grid">
+        <aside class="contact__aside reveal">
+          <p>
+            Have a look at who we are looking for, then write to us — there is no need to be formal.
+            If you are here to join, we will also ask about your singing background.
+          </p>
+
+          <div class="contact__direct">
+            <a href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">
+              <span>
+                <span class="label">DMs are open too</span>
+                <span class="value">@OMIYAacappella</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a href="./rules.html">
+              <span>
+                <span class="label">Worth reading first</span>
+                <span class="value">Our house rules</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </aside>
+
+        <!-- The delivery address lives in FORM_ENDPOINT in main.js, so it is
+             never shown on the page. -->
+        <form class="form reveal" id="contactForm" novalidate data-delay="1">
+          <div class="field">
+            <label class="field__label" for="f-name">Name<span class="field__req">Required</span></label>
+            <input type="text" id="f-name" name="name" autocomplete="name" placeholder="Hanako Omiya">
+            <p class="field__error">Please tell us your name.</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-email">Email address<span class="field__req">Required</span></label>
+            <input type="email" id="f-email" name="email" autocomplete="email" placeholder="you@example.com">
+            <p class="field__error">That does not look like an email address.</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-type">What is this about?<span class="field__req">Required</span></label>
+            <select id="f-type" name="type">
+              <option value="">Please choose</option>
+              <option data-join="1">I would like to join</option>
+              <option>A question about what you do</option>
+              <option>Inviting you to an event</option>
+              <option>Press or media enquiry</option>
+              <option>Something else</option>
+            </select>
+            <p class="field__error">Please choose one.</p>
+          </div>
+
+          <!-- Shown only when the joining option is selected; everything here but the
+               SNS handle is required once it is. -->
+          <div class="field field--join" id="field-gender" hidden>
+            <label class="field__label" for="f-gender">Gender<span class="field__req">Required</span></label>
+            <select id="f-gender" name="gender">
+              <option value="">Please choose</option>
+              <option>Female</option>
+              <option>Male</option>
+              <option>Other / prefer not to say</option>
+            </select>
+            <p class="field__error">Please choose one.</p>
+          </div>
+
+          <div class="field field--join" id="field-age" hidden>
+            <label class="field__label" for="f-age">Age<span class="field__req">Required</span></label>
+            <input type="number" id="f-age" name="age" min="15" max="99" inputmode="numeric" placeholder="28">
+            <p class="field__hint">We are looking for singers aged 20 to 35.</p>
+            <p class="field__error">Please tell us your age.</p>
+          </div>
+
+          <div class="field field--join" id="field-area" hidden>
+            <label class="field__label" for="f-area">Where you live (prefecture)<span class="field__req">Required</span></label>
+            <select id="f-area" name="area">
+              <option value="">Please choose</option>
+              <option>Hokkaido</option>
+              <option>Aomori</option>
+              <option>Iwate</option>
+              <option>Miyagi</option>
+              <option>Akita</option>
+              <option>Yamagata</option>
+              <option>Fukushima</option>
+              <option>Ibaraki</option>
+              <option>Tochigi</option>
+              <option>Gunma</option>
+              <option>Saitama</option>
+              <option>Chiba</option>
+              <option>Tokyo</option>
+              <option>Kanagawa</option>
+              <option>Niigata</option>
+              <option>Toyama</option>
+              <option>Ishikawa</option>
+              <option>Fukui</option>
+              <option>Yamanashi</option>
+              <option>Nagano</option>
+              <option>Gifu</option>
+              <option>Shizuoka</option>
+              <option>Aichi</option>
+              <option>Mie</option>
+              <option>Shiga</option>
+              <option>Kyoto</option>
+              <option>Osaka</option>
+              <option>Hyogo</option>
+              <option>Nara</option>
+              <option>Wakayama</option>
+              <option>Tottori</option>
+              <option>Shimane</option>
+              <option>Okayama</option>
+              <option>Hiroshima</option>
+              <option>Yamaguchi</option>
+              <option>Tokushima</option>
+              <option>Kagawa</option>
+              <option>Ehime</option>
+              <option>Kochi</option>
+              <option>Fukuoka</option>
+              <option>Saga</option>
+              <option>Nagasaki</option>
+              <option>Kumamoto</option>
+              <option>Oita</option>
+              <option>Miyazaki</option>
+              <option>Kagoshima</option>
+              <option>Okinawa</option>
+            </select>
+            <p class="field__hint">We rehearse around Omiya, so we ask that you live within the Kanto region.</p>
+            <p class="field__error">Please choose where you live.</p>
+          </div>
+
+          <div class="field field--join" id="field-circle" hidden>
+            <label class="field__label" for="f-circle">A cappella circle<span class="field__req">Required</span></label>
+            <input type="text" id="f-circle" name="circle" placeholder="e.g. the a cappella circle at ⃝⃝ University">
+            <p class="field__hint">Past or present, either is fine. List them all if there is more than one.</p>
+            <p class="field__error">Please tell us where you have sung.</p>
+          </div>
+
+          <div class="field field--join" id="field-history" hidden>
+            <label class="field__label" for="f-history">How long you have sung<span class="field__req">Required</span></label>
+            <input type="text" id="f-history" name="history" placeholder="e.g. four years at university plus two since">
+            <p class="field__error">Please tell us how long you have sung.</p>
+          </div>
+
+          <div class="field field--join field--checks" id="field-parts" hidden>
+            <span class="field__label">Parts you can sing<span class="field__req">Required</span></span>
+            <div class="checks">
+              <label><input type="checkbox" name="parts" value="Lead"><span>Lead</span></label>
+              <label><input type="checkbox" name="parts" value="1st"><span>1st</span></label>
+              <label><input type="checkbox" name="parts" value="2nd"><span>2nd</span></label>
+              <label><input type="checkbox" name="parts" value="3rd"><span>3rd</span></label>
+              <label><input type="checkbox" name="parts" value="4th"><span>4th</span></label>
+              <label><input type="checkbox" name="parts" value="Bass"><span>Bass</span></label>
+              <label><input type="checkbox" name="parts" value="Percussion"><span>Percussion</span></label>
+            </div>
+            <p class="field__hint">Choose every part you can cover.</p>
+            <p class="field__error">Please choose at least one part.</p>
+          </div>
+
+          <div class="field field--join" id="field-sns" hidden>
+            <label class="field__label" for="f-sns">Social media handle<span class="field__req field__req--any">Optional</span></label>
+            <input type="text" id="f-sns" name="sns" placeholder="e.g. @omiya_hanako on X or Instagram">
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-message">Your message<span class="field__req">Required</span></label>
+            <textarea id="f-message" name="message" placeholder="Tell us whatever you would like us to know."></textarea>
+            <p class="field__error">Please write us a message.</p>
+          </div>
+
+          <div class="field field--check">
+            <label>
+              <input type="checkbox" id="f-agree" name="agree">
+              <span>I have read who you are looking for and the house rules, and I agree to them. (<a href="./rules.html" style="border-bottom:1px solid currentColor">Read the house rules</a>)</span>
+            </label>
+            <p class="field__error">Please agree before sending.</p>
+          </div>
+
+          <!-- Honeypot: bots fill it in, humans never see it. -->
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="visually-hidden" aria-hidden="true">
+
+          <button class="btn btn--accent btn--lg form__submit" type="submit">
+            Send<span class="btn__arrow" aria-hidden="true">→</span>
+          </button>
+
+          <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+
+          <p class="form__note">
+            We use what you tell us only to reply to you and to guide you through joining — nothing else.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+

@@ -18,7 +18,11 @@ Webサイト・プロトタイプです。運営メンバーへの提示用で�
 ├── projects.html       # 企画一覧（38件＋過去の企画トグル）
 ├── contact.html        # お問い合わせ
 ├── rules.html          # 活動ルール全文
+├── en/                 # 英語版（同じ6ページ・生成物）
+├── robots.txt          # 生成物
+├── sitemap.xml         # 生成物（日英12URL）
 ├── parts/              # 各ページの中身（ここを編集する）
+│   └── en/             # その英訳（日本語版と1対1）
 ├── server/             # LINE Webhook → 企画一覧フィード（Cloudflare Worker）
 │   └── README.md       # 料金・セットアップ手順・投稿フォーマット
 ├── wrangler.toml       # Cloudflare へのデプロイ設定
@@ -44,8 +48,10 @@ Webサイト・プロトタイプです。運営メンバーへの提示用で�
 ルート直下の `*.html` は **`scripts/assemble.py` が生成したもの**です。直接編集しても
 次に生成した時点で消えます。
 
-- **中身を直す** → `parts/*.html`（hero / about / gallery / projects / x / contact / footer）
+- **中身を直す** → `parts/*.html`（hero / about / gallery / projects / x / contact / rules / footer）
+- **その英訳を直す** → `parts/en/*.html`（ファイル名は日本語版と同じ）
 - **ヘッダー・フッター・ナビ・トップの構成を直す** → `scripts/assemble.py`
+- **タイトル・説明文・パンくず・MENUカードの文言** → `scripts/assemble.py` の `JA` / `EN`
 
 編集したら生成します。
 
@@ -53,7 +59,12 @@ Webサイト・プロトタイプです。運営メンバーへの提示用で�
 python3 scripts/assemble.py
 ```
 
-`rules.html` だけは parts を使わず単独で管理しています。
+日本語がデフォルトでルート直下、英語は `en/` に出力されます。ヘッダーの JA / EN
+スイッチと `hreflang` は自動で相互にリンクされます。`parts/en/` に対応するファイルが
+無いとビルドは止まります（英訳の入れ忘れをそのまま公開しないためです）。
+
+公開URLは `scripts/assemble.py` の `SITE_URL` 1か所から組み立てています。デプロイ先が
+変わったら、必ずここを直してから生成してください。
 
 ## ローカルで見る
 
@@ -277,7 +288,7 @@ npx wrangler dev --port 8788 --local
 **このビルドコマンドは必須です。** 出力ディレクトリをリポジトリのルートにすると、
 `README.md`・`server/`・`scripts/` がそのままURLで閲覧できてしまいます
 （この README や Worker の設定手順が公開されます）。
-`scripts/build.sh` は `index.html` / `rules.html` / `assets/` と `_headers` だけを `dist/` に集めます。
+`scripts/build.sh` は生成した各ページ（`en/` を含む）・`assets/`・`robots.txt` / `sitemap.xml` と `_headers` だけを `dist/` に集めます。
 
 無料枠との関係:
 
