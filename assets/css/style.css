@@ -759,6 +759,109 @@ textarea {
 }
 
 /* --------------------------------------------------------------------------
+   8b. Home page — the way in to each section
+   -------------------------------------------------------------------------- */
+.portal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.portal__card {
+  position: relative;
+  display: block;
+  padding: 32px 28px 64px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease),
+    border-color 0.5s var(--ease);
+}
+
+.portal__card:hover,
+.portal__card:focus-visible {
+  transform: translateY(-6px);
+  border-color: var(--ink);
+  box-shadow: 0 26px 48px -32px rgba(20, 18, 15, 0.45);
+}
+
+.portal__no {
+  font-family: var(--f-en);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--c-accent);
+}
+
+.portal__title {
+  margin-top: 12px;
+  font-size: clamp(18px, 2.2vw, 22px);
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.portal__text {
+  margin-top: 12px;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--ink-70);
+}
+
+.portal__arrow {
+  position: absolute;
+  left: 28px;
+  bottom: 28px;
+  font-family: var(--f-en);
+  font-size: 18px;
+  color: var(--c-accent);
+  transition: transform 0.4s var(--ease);
+}
+
+.portal__card:hover .portal__arrow {
+  transform: translateX(6px);
+}
+
+/* Closing invitation */
+.join {
+  padding: clamp(40px, 6vw, 76px) clamp(28px, 5vw, 64px);
+  border-radius: 24px;
+  background: var(--ink);
+  color: var(--paper);
+  text-align: center;
+}
+
+.join__title {
+  font-size: clamp(22px, 3.6vw, 38px);
+  font-weight: 900;
+  line-height: 1.5;
+}
+
+.join__text {
+  margin: 20px auto 0;
+  max-width: 34em;
+  font-size: 14.5px;
+  color: rgba(252, 250, 245, 0.72);
+}
+
+.join__actions {
+  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+
+.join__actions .btn:not(.btn--accent) {
+  border-color: rgba(252, 250, 245, 0.4);
+  color: var(--paper);
+}
+
+.join__actions .btn:not(.btn--accent):hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
    9. Gallery
    -------------------------------------------------------------------------- */
 .gal-filter {

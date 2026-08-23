@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お問い合わせ｜OMIYAcappella</title>
+<meta name="description" content="参加のご希望、ご質問、イベント出演のご相談はこちらから。送信内容は運営に届き、確認のうえ順次ご返信します。">
+<meta name="theme-color" content="#fcfaf5">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OMIYAcappella 大宮アカペラプラットフォーム">
+<meta property="og:title" content="お問い合わせ｜OMIYAcappella">
+<meta property="og:description" content="参加のご希望、ご質問、イベント出演のご相談はこちらから。送信内容は運営に届き、確認のうえ順次ご返信します。">
+<meta property="og:image" content="./assets/img/maihama-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@OMIYAacappella">
+
+<link rel="icon" href="./assets/img/logo.jpg">
+<link rel="apple-touch-icon" href="./assets/img/logo.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+
+<!-- ====================== HEADER ====================== -->
+<header class="header is-stuck" id="header">
+  <div class="header__inner">
+    <a class="brand" href="./index.html">
+      <img class="brand__mark" src="./assets/img/logo.jpg" alt="">
+      <span>OMIYAcappella</span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="メニューを開く">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav" id="nav" aria-label="メインナビゲーション">
+      <ul class="nav__list">
+        <li><a class="nav__link" href="./about.html">OMIYAcappellaとは？</a></li>
+        <li><a class="nav__link" href="./gallery.html">ギャラリー</a></li>
+        <li><a class="nav__link" href="./projects.html">企画一覧</a></li>
+        <li><a class="nav__link" href="./index.html#x">X（Twitter）</a></li>
+        <li><a class="btn nav__cta is-current" href="./contact.html">お問い合わせ<span class="btn__arrow" aria-hidden="true">→</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-hero">
+    <span class="deco deco--diamond deco--yellow" style="top:14%;right:7%" aria-hidden="true"></span>
+    <span class="deco deco--diamond deco--blue" style="bottom:-8%;right:24%" aria-hidden="true"></span>
+
+    <div class="container" style="position:relative;z-index:1">
+      <p class="page-hero__en">Contact</p>
+      <h1 class="page-hero__title">お問い合わせ</h1>
+      <p class="sec-head__lead" style="margin-top:20px">参加のご希望、ご質問、イベント出演のご相談などはこちらから。送信内容は運営のメールアドレス宛に届き、確認のうえ順次ご返信します。</p>
+      <p class="breadcrumb"><a href="./index.html">Home</a> ／ お問い合わせ</p>
+    </div>
+  </section>
+  <section class="section">
+  <!-- ====================== 05 CONTACT ====================== -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="contact__grid">
+        <aside class="contact__aside reveal">
+          <p>
+            募集要項をご確認のうえ、お気軽にご連絡ください。
+            参加をご希望の場合は、アカペラ歴もあわせてお伺いします。
+          </p>
+
+          <div class="contact__direct">
+            <a href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">
+              <span>
+                <span class="label">X / DM でも受付中</span>
+                <span class="value">@OMIYAacappella</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a href="./rules.html">
+              <span>
+                <span class="label">送信前にご確認ください</span>
+                <span class="value">活動ルールを見る</span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </aside>
+
+        <!-- The delivery address lives in FORM_ENDPOINT in main.js, so it is
+             never shown on the page. -->
+        <form class="form reveal" id="contactForm" novalidate data-delay="1">
+          <div class="field">
+            <label class="field__label" for="f-name">お名前<span class="field__req">必須</span></label>
+            <input type="text" id="f-name" name="name" autocomplete="name" placeholder="大宮 花子">
+            <p class="field__error">お名前をご入力ください。</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-email">メールアドレス<span class="field__req">必須</span></label>
+            <input type="email" id="f-email" name="email" autocomplete="email" placeholder="you@example.com">
+            <p class="field__error">メールアドレスの形式をご確認ください。</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-type">お問い合わせ種別<span class="field__req">必須</span></label>
+            <select id="f-type" name="type">
+              <option value="">選択してください</option>
+              <option>参加を希望する</option>
+              <option>活動内容についての質問</option>
+              <option>イベント出演・共催のご相談</option>
+              <option>取材・掲載のご依頼</option>
+              <option>その他</option>
+            </select>
+            <p class="field__error">お問い合わせ種別をお選びください。</p>
+          </div>
+
+          <!-- Shown, and required, only when 参加を希望する is selected. -->
+          <div class="field" id="field-history" hidden>
+            <label class="field__label" for="f-history">アカペラ歴<span class="field__req">必須</span></label>
+            <input type="text" id="f-history" name="history" placeholder="例）大学のアカペラサークルに4年間在籍／パートはBass">
+            <p class="field__hint">所属していたサークル名・在籍年数・パートをご記入ください。</p>
+            <p class="field__error">アカペラ歴をご入力ください。</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="f-message">お問い合わせ内容<span class="field__req">必須</span></label>
+            <textarea id="f-message" name="message" placeholder="ご質問やご希望をご自由にご記入ください。"></textarea>
+            <p class="field__error">お問い合わせ内容をご入力ください。</p>
+          </div>
+
+          <div class="field field--check">
+            <label>
+              <input type="checkbox" id="f-agree" name="agree">
+              <span>募集要項と活動ルールを確認し、内容に同意します。（<a href="./rules.html" style="border-bottom:1px solid currentColor">活動ルールを見る</a>）</span>
+            </label>
+            <p class="field__error">ご同意のうえ送信してください。</p>
+          </div>
+
+          <!-- Honeypot: bots fill it in, humans never see it. -->
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="visually-hidden" aria-hidden="true">
+
+          <button class="btn btn--accent btn--lg form__submit" type="submit">
+            送信する<span class="btn__arrow" aria-hidden="true">→</span>
+          </button>
+
+          <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+
+          <p class="form__note">
+            ご入力いただいた個人情報は、お問い合わせへの返信および入会のご案内以外には使用しません。
+          </p>
+        </form>
+      </div>
+    </div>
+  
+  </section>
+
+</main>
+
+<!-- ====================== FOOTER ====================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div>
+        <p class="footer__logo">
+          <img src="./assets/img/logo.jpg" alt="">
+          OMIYAcappella
+        </p>
+        <p class="footer__tagline">楽しく、いつでも、アカペラを、大宮で</p>
+        <p class="footer__lead">
+          サークルのような固定バンドを作るのではなく、好きな時に好きな曲を歌うために。
+          一日 or 短期の企画バンドを自由につくれる、大宮周辺のアカペラプラットフォームです。
+        </p>
+      </div>
+
+      <nav class="footer__nav" aria-label="フッターナビゲーション">
+        <div>
+          <h3>Menu</h3>
+          <ul>
+            <li><a href="./about.html">OMIYAcappellaとは？</a></li>
+            <li><a href="./gallery.html">ギャラリー</a></li>
+            <li><a href="./projects.html">企画一覧</a></li>
+            <li><a href="./rules.html">活動ルール</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <ul>
+            <li><a href="https://x.com/OMIYAacappella" target="_blank" rel="noopener">X（@OMIYAacappella）</a></li>
+            <li><a href="./contact.html">連絡フォーム</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© 2026 OMIYAcappella</p>
+      <p class="footer__credits">
+        大宮駅の写真：MaedaAkihiko（CC BY-SA 4.0）／マイクの写真：Marcel Grieder（CC BY 2.0）— いずれも
+        <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a>。
+        ロゴ・演奏動画・活動写真は OMIYAcappella 提供。
+      </p>
+    </div>
+  </div>
+</footer>
+
+<p class="proto-flag">Prototype</p>
+
+<script src="./assets/js/main.js"></script>
+</body>
+</html>

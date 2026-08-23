@@ -12,31 +12,46 @@ Webサイト・プロトタイプです。運営メンバーへの提示用で�
 
 ```
 .
-├── index.html          # トップページ
-│     01 About     — 導入文＋4つの小カテゴリ（.subsec で統一）
-│                    01-1 6つの決まりごと／01-2 アカペラに参加するまでの流れ
-│                    01-3 募集要項／01-4 活動ルール
-│     02 Gallery   — 演奏動画・写真（絞り込み＋ライトボックス）
-│     03 Projects  — 企画一覧（LINEグループ由来のタイムライン＋過去の企画トグル）
-│     04 X         — 直近3件の投稿を埋め込み
-│     05 Contact   — 連絡フォーム
-├── rules.html          # 活動ルール全文（Aboutの「活動ルールを詳しく見る」からリンク）
-├── server/             # LINE Webhook → 企画募集フィード（Cloudflare Worker）
+├── index.html          # トップ（ヒーロー／各ページへの入口／最近の企画3件／X／参加CTA）
+├── about.html          # OMIYAcappellaとは？（6つの決まりごと／流れ／募集要項／活動ルール）
+├── gallery.html        # ギャラリー（演奏動画8・音源6）
+├── projects.html       # 企画一覧（38件＋過去の企画トグル）
+├── contact.html        # お問い合わせ
+├── rules.html          # 活動ルール全文
+├── parts/              # 各ページの中身（ここを編集する）
+├── server/             # LINE Webhook → 企画一覧フィード（Cloudflare Worker）
 │   └── README.md       # 料金・セットアップ手順・投稿フォーマット
 ├── scripts/
+│   ├── assemble.py         # parts/ ＋ 共通の外枠 → 各HTMLを生成
 │   ├── fetch-x-latest.mjs  # Xの最新3件を取得（GitHub Actionsから毎日実行）
 │   ├── dev-server.py       # ローカルプレビュー用（キャッシュ無効）
 │   ├── build.sh            # 公開用に dist/ を組み立てる
 │   └── _headers            # 公開時のキャッシュ・セキュリティヘッダ
-├── assets/
-│   ├── css/style.css   # 全スタイル（デザイントークン → セクション順）
-│   ├── js/main.js      # ローダー・ナビ・スクロール演出・ギャラリー・フォーム（依存なし）
-│   ├── img/            # 画像一式
-│   └── video/          # 演奏動画・音源（14ファイル・計89MB）
-└── .claude/launch.json # ローカルプレビュー用の簡易サーバ設定
+└── assets/
+    ├── css/style.css   # 全スタイル（デザイントークン → セクション順）
+    ├── js/main.js      # ローダー・ナビ・ギャラリー・フォーム（依存なし）
+    ├── img/            # 画像一式
+    ├── video/          # 演奏動画・音源（14ファイル・計89MB）
+    └── data/           # Xの最新3件（GitHub Actionsが毎日更新）
 ```
 
-素の HTML / CSS / JavaScript のみで、ビルド不要です。
+素の HTML / CSS / JavaScript のみ。ブラウザ側の依存はありません。
+
+### ページの編集方法
+
+ルート直下の `*.html` は **`scripts/assemble.py` が生成したもの**です。直接編集しても
+次に生成した時点で消えます。
+
+- **中身を直す** → `parts/*.html`（hero / about / gallery / projects / x / contact / footer）
+- **ヘッダー・フッター・ナビ・トップの構成を直す** → `scripts/assemble.py`
+
+編集したら生成します。
+
+```bash
+python3 scripts/assemble.py
+```
+
+`rules.html` だけは parts を使わず単独で管理しています。
 
 ## ローカルで見る
 
