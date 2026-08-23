@@ -120,12 +120,112 @@
             <p class="field__error">お問い合わせ種別をお選びください。</p>
           </div>
 
-          <!-- Shown, and required, only when 参加を希望する is selected. -->
-          <div class="field" id="field-history" hidden>
+          <!-- Shown only when 参加を希望する is selected; everything here but the
+               SNS handle is required once it is. -->
+          <div class="field field--join" id="field-gender" hidden>
+            <label class="field__label" for="f-gender">性別<span class="field__req">必須</span></label>
+            <select id="f-gender" name="gender">
+              <option value="">選択してください</option>
+              <option>女性</option>
+              <option>男性</option>
+              <option>その他・回答しない</option>
+            </select>
+            <p class="field__error">性別をお選びください。</p>
+          </div>
+
+          <div class="field field--join" id="field-age" hidden>
+            <label class="field__label" for="f-age">年齢<span class="field__req">必須</span></label>
+            <input type="number" id="f-age" name="age" min="15" max="99" inputmode="numeric" placeholder="28">
+            <p class="field__hint">募集要項は20〜35歳です。</p>
+            <p class="field__error">年齢をご入力ください。</p>
+          </div>
+
+          <div class="field field--join" id="field-area" hidden>
+            <label class="field__label" for="f-area">居住地（都道府県）<span class="field__req">必須</span></label>
+            <select id="f-area" name="area">
+              <option value="">選択してください</option>
+              <option>北海道</option>
+              <option>青森県</option>
+              <option>岩手県</option>
+              <option>宮城県</option>
+              <option>秋田県</option>
+              <option>山形県</option>
+              <option>福島県</option>
+              <option>茨城県</option>
+              <option>栃木県</option>
+              <option>群馬県</option>
+              <option>埼玉県</option>
+              <option>千葉県</option>
+              <option>東京都</option>
+              <option>神奈川県</option>
+              <option>新潟県</option>
+              <option>富山県</option>
+              <option>石川県</option>
+              <option>福井県</option>
+              <option>山梨県</option>
+              <option>長野県</option>
+              <option>岐阜県</option>
+              <option>静岡県</option>
+              <option>愛知県</option>
+              <option>三重県</option>
+              <option>滋賀県</option>
+              <option>京都府</option>
+              <option>大阪府</option>
+              <option>兵庫県</option>
+              <option>奈良県</option>
+              <option>和歌山県</option>
+              <option>鳥取県</option>
+              <option>島根県</option>
+              <option>岡山県</option>
+              <option>広島県</option>
+              <option>山口県</option>
+              <option>徳島県</option>
+              <option>香川県</option>
+              <option>愛媛県</option>
+              <option>高知県</option>
+              <option>福岡県</option>
+              <option>佐賀県</option>
+              <option>長崎県</option>
+              <option>熊本県</option>
+              <option>大分県</option>
+              <option>宮崎県</option>
+              <option>鹿児島県</option>
+              <option>沖縄県</option>
+            </select>
+            <p class="field__hint">練習は大宮周辺で行うため、関東圏にお住まいの方を対象としています。</p>
+            <p class="field__error">居住地をお選びください。</p>
+          </div>
+
+          <div class="field field--join" id="field-circle" hidden>
+            <label class="field__label" for="f-circle">所属サークル名<span class="field__req">必須</span></label>
+            <input type="text" id="f-circle" name="circle" placeholder="例）〇〇大学アカペラサークル">
+            <p class="field__hint">現在・過去は問いません。複数ある場合はすべてご記入ください。</p>
+            <p class="field__error">所属サークル名をご入力ください。</p>
+          </div>
+
+          <div class="field field--join" id="field-history" hidden>
             <label class="field__label" for="f-history">アカペラ歴<span class="field__req">必須</span></label>
-            <input type="text" id="f-history" name="history" placeholder="例）大学のアカペラサークルに4年間在籍／パートはBass">
-            <p class="field__hint">所属していたサークル名・在籍年数・パートをご記入ください。</p>
+            <input type="text" id="f-history" name="history" placeholder="例）大学4年間＋社会人2年">
             <p class="field__error">アカペラ歴をご入力ください。</p>
+          </div>
+
+          <div class="field field--join field--checks" id="field-parts" hidden>
+            <span class="field__label">可能パート<span class="field__req">必須</span></span>
+            <div class="checks">
+              <label><input type="checkbox" name="parts" value="Lead"><span>Lead</span></label>
+              <label><input type="checkbox" name="parts" value="1st"><span>1st</span></label>
+              <label><input type="checkbox" name="parts" value="2nd"><span>2nd</span></label>
+              <label><input type="checkbox" name="parts" value="3rd"><span>3rd</span></label>
+              <label><input type="checkbox" name="parts" value="Bass"><span>Bass</span></label>
+              <label><input type="checkbox" name="parts" value="Percussion"><span>Percussion</span></label>
+            </div>
+            <p class="field__hint">できるパートをすべてお選びください。</p>
+            <p class="field__error">可能パートを1つ以上お選びください。</p>
+          </div>
+
+          <div class="field field--join" id="field-sns" hidden>
+            <label class="field__label" for="f-sns">SNSアカウント名<span class="field__req field__req--any">任意</span></label>
+            <input type="text" id="f-sns" name="sns" placeholder="例）@omiya_hanako（X / Instagram など）">
           </div>
 
           <div class="field">

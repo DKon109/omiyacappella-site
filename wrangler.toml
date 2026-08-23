@@ -8,7 +8,7 @@
 #
 # One secret must be set in the dashboard (Settings → Variables and Secrets):
 #   CONTACT_ENDPOINT   where the contact form is forwarded
-name = "omiyacappella-site"
+name = "omiya"
 main = "worker/index.js"
 compatibility_date = "2026-08-01"
 

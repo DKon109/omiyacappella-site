@@ -10,7 +10,7 @@
  *   CONTACT_ENDPOINT   secret — where the form is forwarded
  */
 
-const FIELDS = ['name', 'email', 'type', 'history', 'message'];
+const FIELDS = ['name', 'email', 'type', 'gender', 'age', 'area', 'circle', 'history', 'sns', 'message'];
 const MAX_LEN = 4000;
 
 const json = (status, body) =>
@@ -53,7 +53,17 @@ async function handleContact(request, env) {
   payload.append('お名前', values.name);
   payload.append('メールアドレス', values.email);
   payload.append('お問い合わせ種別', values.type);
+  // Only present on a membership enquiry.
+  if (values.gender) payload.append('性別', values.gender);
+  if (values.age) payload.append('年齢', values.age);
+  if (values.area) payload.append('居住地', values.area);
+  if (values.circle) payload.append('所属サークル名', values.circle);
   if (values.history) payload.append('アカペラ歴', values.history);
+
+  const parts = form.getAll('parts').map((p) => p.toString()).filter(Boolean);
+  if (parts.length) payload.append('可能パート', parts.join(' / '));
+
+  if (values.sns) payload.append('SNSアカウント名', values.sns);
   payload.append('お問い合わせ内容', values.message);
   payload.append('_subject', `【OMIYAcappella】サイトからのお問い合わせ：${values.type}`);
   payload.append('_template', 'table');

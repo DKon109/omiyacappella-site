@@ -573,45 +573,80 @@
     .map(function (id) { return document.getElementById(id); })
     .filter(Boolean);
 
-  /* アカペラ歴 is only asked of people joining, so it appears — and counts as
-     required — only once that option is chosen. */
+  /* These are asked only of people joining, so they appear — and the first two
+     count as required — only once that option is chosen. */
   var JOIN_OPTION = '参加を希望する';
   var typeField = document.getElementById('f-type');
-  var historyField = document.getElementById('f-history');
-  var historyWrap = document.getElementById('field-history');
 
-  var historyNeeded = function () {
+  var joinFields = [
+    { wrap: 'field-gender', input: 'f-gender', required: true },
+    { wrap: 'field-age', input: 'f-age', required: true },
+    { wrap: 'field-area', input: 'f-area', required: true },
+    { wrap: 'field-circle', input: 'f-circle', required: true },
+    { wrap: 'field-history', input: 'f-history', required: true },
+    { wrap: 'field-parts', group: 'parts', required: true },
+    { wrap: 'field-sns', input: 'f-sns', required: false }
+  ]
+    .map(function (spec) {
+      return {
+        wrap: document.getElementById(spec.wrap),
+        input: spec.input ? document.getElementById(spec.input) : null,
+        boxes: spec.group
+          ? Array.prototype.slice.call(
+              document.querySelectorAll('input[name="' + spec.group + '"]')
+            )
+          : null,
+        required: spec.required
+      };
+    })
+    .filter(function (spec) { return spec.wrap && (spec.input || spec.boxes); });
+
+  var joining = function () {
     return !!typeField && typeField.value === JOIN_OPTION;
   };
 
-  var syncHistory = function () {
-    if (!historyWrap) return;
-    var on = historyNeeded();
-    historyWrap.hidden = !on;
-    if (!on) {
-      historyWrap.classList.remove('has-error');
-      historyField.value = '';
-    }
+  var syncJoinFields = function () {
+    var on = joining();
+    joinFields.forEach(function (spec) {
+      spec.wrap.hidden = !on;
+      if (on) return;
+      spec.wrap.classList.remove('has-error');
+      if (spec.input) spec.input.value = '';
+      if (spec.boxes) spec.boxes.forEach(function (box) { box.checked = false; });
+    });
   };
 
   if (typeField) {
-    typeField.addEventListener('change', syncHistory);
-    syncHistory();
+    typeField.addEventListener('change', syncJoinFields);
+    syncJoinFields();
   }
 
-  var activeRequired = function () {
-    return historyNeeded() && historyField
-      ? baseRequired.concat([historyField])
-      : baseRequired;
+  var validateGroup = function (spec) {
+    var ok = spec.boxes.some(function (box) { return box.checked; });
+    spec.wrap.classList.toggle('has-error', !ok);
+    return ok;
   };
 
-  baseRequired.concat(historyField ? [historyField] : []).forEach(function (input) {
-    // Only re-validate after a first failed attempt, so typing feels quiet.
-    input.addEventListener('blur', function () {
-      if (fieldOf(input).classList.contains('has-error')) validate(input);
-    });
-    input.addEventListener('change', function () {
-      if (fieldOf(input).classList.contains('has-error')) validate(input);
+  /** Validates everything that applies right now, returning false on any miss. */
+  var validateAll = function () {
+    var results = baseRequired.map(validate);
+
+    if (joining()) {
+      joinFields.forEach(function (spec) {
+        if (!spec.required) return;
+        results.push(spec.boxes ? validateGroup(spec) : validate(spec.input));
+      });
+    }
+
+    return results.indexOf(false) === -1;
+  };
+
+  joinFields.forEach(function (spec) {
+    if (!spec.boxes) return;
+    spec.boxes.forEach(function (box) {
+      box.addEventListener('change', function () {
+        if (spec.wrap.classList.contains('has-error')) validateGroup(spec);
+      });
     });
   });
 
@@ -624,8 +659,7 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    var results = activeRequired().map(validate);
-    if (results.indexOf(false) !== -1) {
+    if (!validateAll()) {
       say('未入力または形式に誤りのある項目があります。赤く表示された項目をご確認ください。', false);
       var firstError = form.querySelector('.field.has-error input, .field.has-error select, .field.has-error textarea');
       if (firstError) firstError.focus();

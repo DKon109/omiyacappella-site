@@ -2088,6 +2088,47 @@ textarea {
   display: block;
 }
 
+/* Part checkboxes — a wrapping row of small toggles. */
+.field--checks .field__label {
+  display: flex;
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 16px 10px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.checks label:hover {
+  border-color: var(--ink);
+}
+
+.checks input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--c-accent);
+}
+
+.checks label:has(input:checked) {
+  border-color: var(--c-accent);
+  background: color-mix(in srgb, var(--c-accent) 10%, var(--white));
+}
+
 .field--check label {
   display: flex;
   align-items: flex-start;
