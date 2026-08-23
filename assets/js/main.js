@@ -20,6 +20,42 @@
      if the file ever fails to load. */
   var X_FEED = '/assets/data/x-latest.json';
 
+  /* The English pages are the same markup with the same ids, so the only thing
+     that varies at runtime is the wording. */
+  var EN = document.documentElement.lang === 'en';
+
+  /* Every string the script puts on screen. Anything the organisers read
+     instead — the mail subject, for one — stays in Japanese on both. */
+  var T = EN ? {
+    menuOpen: 'Open menu',
+    menuClose: 'Close menu',
+    seeOnX: 'See the post on X',
+    onX: 'View on X',
+    playFailed: 'That would not play.<br>',
+    playOnX: 'Play it on X instead',
+    liveTag: 'Straight from LINE',
+    partsWanted: 'Parts wanted',
+    deadline: 'Deadline',
+    when: 'When',
+    place: 'Rehearsal',
+    invalid: 'Some entries are missing or not quite right. Please check the fields marked in red.',
+    orDM: ' If it still will not send, message us on X (@OMIYAacappella).'
+  } : {
+    menuOpen: 'メニューを開く',
+    menuClose: 'メニューを閉じる',
+    seeOnX: 'Xの投稿を見る',
+    onX: 'Xで見る',
+    playFailed: '再生できませんでした。<br>',
+    playOnX: 'Xの投稿ページで再生する',
+    liveTag: 'LINEから自動反映',
+    partsWanted: '募集パート',
+    deadline: '締切',
+    when: '日時',
+    place: '練習場所',
+    invalid: '未入力または形式に誤りのある項目があります。赤く表示された項目をご確認ください。',
+    orDM: '解決しない場合は X（@OMIYAacappella）のDMからご連絡ください。'
+  };
+
   /* Paths in the feed and in LATEST_POSTS are written relative to the site
      root, which is where the Japanese pages live. The English pages are a
      directory down, so anything starting './' has to be anchored. */
@@ -95,7 +131,7 @@
   if (toggle && nav) {
     var setNav = function (open) {
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+      toggle.setAttribute('aria-label', open ? T.menuClose : T.menuOpen);
       nav.classList.toggle('is-open', open);
       document.body.classList.toggle('is-locked', open);
     };
@@ -218,7 +254,7 @@
 
     var xLink = function (item, label) {
       return ' — <a href="' + item.getAttribute('href')
-        + '" target="_blank" rel="noopener">' + (label || 'Xの投稿を見る') + '</a>';
+        + '" target="_blank" rel="noopener">' + (label || T.seeOnX) + '</a>';
     };
 
     var showPhoto = function (item) {
@@ -229,7 +265,7 @@
       lbStage.appendChild(img);
       lbCap.innerHTML = item.dataset.caption
         + (item.dataset.href
-          ? ' — <a href="' + item.dataset.href + '" target="_blank" rel="noopener">Xの投稿を見る</a>'
+          ? ' — <a href="' + item.dataset.href + '" target="_blank" rel="noopener">' + T.seeOnX + '</a>'
           : '');
     };
 
@@ -254,9 +290,9 @@
         player.remove();
         var fallback = document.createElement('p');
         fallback.className = 'lightbox__fallback';
-        fallback.innerHTML = '再生できませんでした。<br>'
+        fallback.innerHTML = T.playFailed
           + '<a href="' + item.getAttribute('href')
-          + '" target="_blank" rel="noopener">Xの投稿ページで再生する</a>';
+          + '" target="_blank" rel="noopener">' + T.playOnX + '</a>';
         lbStage.appendChild(fallback);
       });
 
@@ -443,7 +479,7 @@
     link.target = '_blank';
     link.rel = 'noopener';
     link.className = 'xpost__link';
-    link.textContent = 'Xで見る';
+    link.textContent = T.onX;
     foot.appendChild(link);
     card.appendChild(foot);
 
@@ -490,7 +526,7 @@
         : entry.status === '成立' ? 'filled' : 'done';
       top.appendChild(el('span', 'tag tag--' + tone, entry.status));
     }
-    top.appendChild(el('span', 'tag tag--live', 'LINEから自動反映'));
+    top.appendChild(el('span', 'tag tag--live', T.liveTag));
     card.appendChild(top);
 
     var song = el('h3', 'line-post__song', entry.song);
@@ -502,10 +538,10 @@
     var foot = document.createElement('dl');
     foot.className = 'line-post__foot';
     [
-      ['募集パート', entry.parts],
-      ['締切', entry.deadline],
-      ['日時', entry.date],
-      ['練習場所', entry.place]
+      [T.partsWanted, entry.parts],
+      [T.deadline, entry.deadline],
+      [T.when, entry.date],
+      [T.place, entry.place]
     ].forEach(function (pair) {
       if (!pair[1]) return;
       var wrap = document.createElement('div');
@@ -533,16 +569,18 @@
   if (pastToggle) {
     var pastPosts = document.querySelectorAll('.line-post[data-state="past"]');
 
-    var closedLabel = '過去の企画を見る（' + pastPosts.length + '件）'
+    var closedLabel = (EN
+      ? 'See past projects (' + pastPosts.length + ')'
+      : '過去の企画を見る（' + pastPosts.length + '件）')
       + '<span class="btn__arrow" aria-hidden="true">\u2192</span>';
+    var openLabel = (EN ? 'Hide past projects' : '過去の企画を閉じる')
+      + '<span class="btn__arrow" aria-hidden="true">\u2191</span>';
     pastToggle.innerHTML = closedLabel;
 
     pastToggle.addEventListener('click', function () {
       var open = pastToggle.getAttribute('aria-expanded') === 'true';
       pastToggle.setAttribute('aria-expanded', String(!open));
-      pastToggle.innerHTML = open
-        ? closedLabel
-        : '過去の企画を閉じる<span class="btn__arrow" aria-hidden="true">\u2191</span>';
+      pastToggle.innerHTML = open ? closedLabel : openLabel;
 
       pastPosts.forEach(function (post) {
         post.classList.toggle('is-collapsed', open);
@@ -560,9 +598,6 @@
 
   var status = document.getElementById('formStatus');
 
-  /* The English pages are the same markup with the same ids, so the only thing
-     that has to vary at runtime is the wording. */
-  var EN = document.documentElement.lang === 'en';
   var SAY = EN ? {
     dry: 'Your entries check out. Nothing was actually sent — no destination is configured yet.',
     sending: 'Sending…',
@@ -685,7 +720,7 @@
     e.preventDefault();
 
     if (!validateAll()) {
-      say('未入力または形式に誤りのある項目があります。赤く表示された項目をご確認ください。', false);
+      say(T.invalid, false);
       var firstError = form.querySelector('.field.has-error input, .field.has-error select, .field.has-error textarea');
       if (firstError) firstError.focus();
       return;
@@ -719,8 +754,7 @@
       })
       .catch(function () {
         say(
-          SAY.failed
-          + '解決しない場合は X（@OMIYAacappella）のDMからご連絡ください。',
+          SAY.failed + T.orDM,
           false
         );
       })
