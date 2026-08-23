@@ -279,23 +279,34 @@ npx wrangler pages deploy dist --project-name=omiyacappella
 - 公開範囲を運営だけに絞りたい場合は、Cloudflare Access（Zero Trust）で
   メールアドレス指定の認証を前に置けます。無料枠で50ユーザーまで。
 
-### メールアドレスの扱い
+### 連絡フォームの送信先（デプロイ後も届きます）
 
-`assets/js/main.js` の `FORM_ENDPOINT` にはフォームの送信先が入っています。
-そのまま公開すると**JavaScriptのソースからアドレスが読めてしまう**ため、
-`scripts/build.sh` は既定でこれを空にします。
+**メールアドレスはコードのどこにも入っていません。** 公開すると
+JavaScriptのソースから読めてしまうためです。代わりに、Pages Function を
+1つ経由させ、アドレスは Cloudflare のシークレットに置きます。
 
-- **既定（何も指定しない）** — アドレスは公開ビルドに含まれません。
-  フォームは入力チェックまで動き、送信時に「送信先が未設定」と表示されます。
-- **フォームを実際に動かす** — FormSubmitを有効化すると
-  `https://formsubmit.co/ajax/el/xxxxxxx` という別名URLが発行されます。
-  これはアドレスを含まないので、そのまま渡せます。
-
-```bash
-FORM_ENDPOINT='https://formsubmit.co/ajax/el/xxxxxxx' bash scripts/build.sh
+```
+フォーム送信 → /api/contact （functions/api/contact.js）
+              → CONTACT_ENDPOINT（シークレット）へ転送 → メール
 ```
 
-Pagesのダッシュボードで設定する場合は、環境変数 `FORM_ENDPOINT` に同じ値を入れます。
+**Pages側で1つだけ設定してください。**
+Settings → Variables and Secrets → Add → **Secret**（Variableではなく）
+
+| 名前 | 値 |
+| --- | --- |
+| `CONTACT_ENDPOINT` | `https://formsubmit.co/ajax/REDACTED@example.com` |
+
+- ⚠️ **初回送信時に一度だけ、そのアドレス宛にFormSubmitから確認メールが届きます。**
+  本文のリンクを押すまで、以降のメールは配信されません。
+- 有効化後に発行される別名URL（`https://formsubmit.co/ajax/el/xxxxxxx`）に
+  差し替えておくと、万一シークレットが漏れてもアドレスは分かりません。
+- 未設定のときは 503 を返し、フォームには「送信に失敗しました」と出ます
+  （黙って握りつぶさない作りです）。
+- ローカル（`dev-server.py`）では `/api/contact` が無いため、
+  フォームは入力チェックまで動き、送信は失敗します。これは想定どおりです。
+
+Function は Pages の無料枠（10万リクエスト/日）に含まれます。
 
 ### そのほか公開前に
 

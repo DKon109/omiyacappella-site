@@ -9,16 +9,11 @@
 
   /* --------------------------------------------------------------- Config */
 
-  /* Where the contact form is delivered. FormSubmit relays each submission to
-     this mailbox; the first submission triggers a one-off confirmation email
-     that the owner has to click before delivery starts.
-
-     TODO before launch: once activated, FormSubmit issues an alias endpoint of
-     the form https://formsubmit.co/ajax/el/xxxxxxx — swap it in here so the
-     address no longer appears anywhere in the source. Any endpoint that accepts
-     a POST (Formspree, Google Apps Script, a serverless function) works too.
-     Set this to '' to fall back to prototype mode, where nothing is sent. */
-  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/REDACTED@example.com';
+  /* Where the contact form is posted. Empty locally, so the form validates and
+     reports that nothing was sent; scripts/build.sh points it at /api/contact
+     for published builds, which is a Pages Function holding the destination in
+     a Cloudflare secret. The address is never in the JavaScript. */
+  var FORM_ENDPOINT = '';
 
   /* Written daily by .github/workflows/x-latest.yml. When it is present the X
      section renders from it; the entries below stand in until then, and again
