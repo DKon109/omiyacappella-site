@@ -243,6 +243,24 @@ X側の仕様変更で止まる可能性はあります。その場合は Action
 | ビルド出力ディレクトリ | `dist` |
 | フレームワークプリセット | なし（None） |
 
+### 手順（どちらか）
+
+**A. ダッシュボードから接続（推奨・CLI不要）**
+
+1. [Cloudflare](https://dash.cloudflare.com/) にログイン → Workers &amp; Pages → Create → Pages
+2. 「Connect to Git」で `DKon109/omiyacappella-site` を選択（privateのままでOK）
+3. 上の表のとおりビルド設定を入力 → Save and Deploy
+
+以後、`main` に push するたびに自動で再デプロイされます。
+
+**B. CLIから直接**
+
+```bash
+npx wrangler login                                  # ブラウザで承認（1回だけ）
+bash scripts/build.sh
+npx wrangler pages deploy dist --project-name=omiyacappella
+```
+
 **このビルドコマンドは必須です。** 出力ディレクトリをリポジトリのルートにすると、
 `README.md`・`server/`・`scripts/` がそのままURLで閲覧できてしまいます
 （この README や Worker の設定手順が公開されます）。
@@ -261,15 +279,29 @@ X側の仕様変更で止まる可能性はあります。その場合は Action
 - 公開範囲を運営だけに絞りたい場合は、Cloudflare Access（Zero Trust）で
   メールアドレス指定の認証を前に置けます。無料枠で50ユーザーまで。
 
-### 公開前に決めること
+### メールアドレスの扱い
 
-1. **`FORM_ENDPOINT` のメールアドレス** — `assets/js/main.js` に平文で入っているため、
-   公開すると**JavaScriptのソースから閲覧できます**。
-   - 運営レビューだけなら `FORM_ENDPOINT = ''` にするのが安全（送信はされず、確認メッセージのみ）
-   - 実際に動かすなら、FormSubmitを有効化して別名エンドポイント（`/ajax/el/xxxxx`）に差し替える
-2. **`PROTOTYPE` バッジ** — レビュー中は付けたままを推奨。
-3. **OGP画像の絶対URL化** — 公開URLが決まってから `og:image` を差し替え。
-4. **`server/wrangler.toml` の `ALLOWED_ORIGIN`** — 公開URLに合わせる（LINE連携を使う場合）。
+`assets/js/main.js` の `FORM_ENDPOINT` にはフォームの送信先が入っています。
+そのまま公開すると**JavaScriptのソースからアドレスが読めてしまう**ため、
+`scripts/build.sh` は既定でこれを空にします。
+
+- **既定（何も指定しない）** — アドレスは公開ビルドに含まれません。
+  フォームは入力チェックまで動き、送信時に「送信先が未設定」と表示されます。
+- **フォームを実際に動かす** — FormSubmitを有効化すると
+  `https://formsubmit.co/ajax/el/xxxxxxx` という別名URLが発行されます。
+  これはアドレスを含まないので、そのまま渡せます。
+
+```bash
+FORM_ENDPOINT='https://formsubmit.co/ajax/el/xxxxxxx' bash scripts/build.sh
+```
+
+Pagesのダッシュボードで設定する場合は、環境変数 `FORM_ENDPOINT` に同じ値を入れます。
+
+### そのほか公開前に
+
+1. **`PROTOTYPE` バッジ** — レビュー中は付けたままを推奨。
+2. **OGP画像の絶対URL化** — 公開URLが決まってから `og:image` を差し替え。
+3. **`server/wrangler.toml` の `ALLOWED_ORIGIN`** — 公開URLに合わせる（LINE連携を使う場合）。
 
 ---
 
