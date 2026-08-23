@@ -21,6 +21,8 @@ Webサイト・プロトタイプです。運営メンバーへの提示用で�
 ├── parts/              # 各ページの中身（ここを編集する）
 ├── server/             # LINE Webhook → 企画一覧フィード（Cloudflare Worker）
 │   └── README.md       # 料金・セットアップ手順・投稿フォーマット
+├── wrangler.toml       # Cloudflare へのデプロイ設定
+├── worker/index.js     # 配信＋連絡フォームの中継（/api/contact）
 ├── scripts/
 │   ├── assemble.py         # parts/ ＋ 共通の外枠 → 各HTMLを生成
 │   ├── fetch-x-latest.mjs  # Xの最新3件を取得（GitHub Actionsから毎日実行）
@@ -237,29 +239,40 @@ X側の仕様変更で止まる可能性はあります。その場合は Action
 
 **無料・無期限**で公開できます。ビルドは不要ですが、`dist/` を組み立てる1行だけ設定します。
 
-| Pages の設定項目 | 値 |
+| 設定項目 | 値 |
 | --- | --- |
-| ビルドコマンド | `bash scripts/build.sh` |
-| ビルド出力ディレクトリ | `dist` |
-| フレームワークプリセット | なし（None） |
+| Project name | `omiyacappella-site` |
+| Build command | `bash scripts/build.sh` |
+| Deploy command | `npx wrangler deploy` |
 
-### 手順（どちらか）
+出力先やフレームワークの指定は不要です。ルートの `wrangler.toml` が
+`dist/` を静的アセットとして配信し、`/api/contact` だけ Worker が受けます。
 
-**A. ダッシュボードから接続（推奨・CLI不要）**
+### 手順（ダッシュボードから接続）
 
-1. [Cloudflare](https://dash.cloudflare.com/) にログイン → Workers &amp; Pages → Create → Pages
-2. 「Connect to Git」で `DKon109/omiyacappella-site` を選択（privateのままでOK）
-3. 上の表のとおりビルド設定を入力 → Save and Deploy
+1. [Cloudflare](https://dash.cloudflare.com/) → Compute → Workers &amp; Pages → Create
+2. リポジトリに `DKon109/omiyacappella-site` を指定（privateのままでOK）
+3. 上の表のとおり入力 → Deploy
 
 以後、`main` に push するたびに自動で再デプロイされます。
 
-**B. CLIから直接**
+CLIからでも同じです。
 
 ```bash
-npx wrangler login                                  # ブラウザで承認（1回だけ）
+npx wrangler login          # ブラウザで承認（1回だけ）
 bash scripts/build.sh
-npx wrangler pages deploy dist --project-name=omiyacappella
+npx wrangler deploy
 ```
+
+### ローカルで本番と同じ形を確認する
+
+```bash
+bash scripts/build.sh
+npx wrangler dev --port 8788 --local
+```
+
+`/about` のような拡張子なしのURLも本番と同じように解決されます。
+`CONTACT_ENDPOINT` を試したいときは `.dev.vars` に書きます（gitignore済み）。
 
 **このビルドコマンドは必須です。** 出力ディレクトリをリポジトリのルートにすると、
 `README.md`・`server/`・`scripts/` がそのままURLで閲覧できてしまいます
@@ -286,7 +299,7 @@ JavaScriptのソースから読めてしまうためです。代わりに、Page
 1つ経由させ、アドレスは Cloudflare のシークレットに置きます。
 
 ```
-フォーム送信 → /api/contact （functions/api/contact.js）
+フォーム送信 → /api/contact （worker/index.js）
               → CONTACT_ENDPOINT（シークレット）へ転送 → メール
 ```
 
@@ -303,10 +316,11 @@ Settings → Variables and Secrets → Add → **Secret**（Variableではなく
   差し替えておくと、万一シークレットが漏れてもアドレスは分かりません。
 - 未設定のときは 503 を返し、フォームには「送信に失敗しました」と出ます
   （黙って握りつぶさない作りです）。
-- ローカル（`dev-server.py`）では `/api/contact` が無いため、
+- ローカルの `dev-server.py` には `/api/contact` が無いため、
   フォームは入力チェックまで動き、送信は失敗します。これは想定どおりです。
+  実際の挙動を見たいときは上の `wrangler dev` を使ってください。
 
-Function は Pages の無料枠（10万リクエスト/日）に含まれます。
+Worker は無料枠（10万リクエスト/日）に含まれます。
 
 ### そのほか公開前に
 

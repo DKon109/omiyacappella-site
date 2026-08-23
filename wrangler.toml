@@ -1,0 +1,17 @@
+# Deployed by Cloudflare Workers Builds from the dashboard.
+#
+#   build command   bash scripts/build.sh
+#   deploy command  npx wrangler deploy
+#
+# The Worker answers /api/contact and hands everything else to the static
+# files that scripts/build.sh assembles into dist/.
+#
+# One secret must be set in the dashboard (Settings → Variables and Secrets):
+#   CONTACT_ENDPOINT   where the contact form is forwarded
+name = "omiyacappella-site"
+main = "worker/index.js"
+compatibility_date = "2026-08-01"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"

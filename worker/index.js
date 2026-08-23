@@ -1,18 +1,13 @@
 /**
- * Contact form relay — a Cloudflare Pages Function.
+ * OMIYAcappella — the deployed site.
  *
- * The form posts here rather than straight to the mail service, so the
- * destination address lives in a Cloudflare secret instead of in the
- * JavaScript every visitor downloads. Removing the address from the page was
- * the point; publishing it in a script would have undone that.
+ * Cloudflare serves the files in dist/ through the ASSETS binding; this Worker
+ * sits in front only to answer the contact form, whose destination address is
+ * held in a secret rather than shipped in the page's JavaScript.
  *
- * Set in the Pages project (Settings → Variables and Secrets):
- *
- *   CONTACT_ENDPOINT   https://formsubmit.co/ajax/<the address>
- *                      or FormSubmit's alias URL once activated
- *
- * Without it the endpoint answers 503 and the form says nothing was sent, so a
- * missing secret is visible rather than silent.
+ * Bindings (see wrangler.toml):
+ *   ASSETS             the built site
+ *   CONTACT_ENDPOINT   secret — where the form is forwarded
  */
 
 const FIELDS = ['name', 'email', 'type', 'history', 'message'];
@@ -24,7 +19,7 @@ const json = (status, body) =>
     headers: { 'Content-Type': 'application/json; charset=utf-8' }
   });
 
-export async function onRequestPost({ request, env }) {
+async function handleContact(request, env) {
   if (!env.CONTACT_ENDPOINT) {
     return json(503, { error: 'contact endpoint is not configured' });
   }
@@ -83,3 +78,17 @@ export async function onRequestPost({ request, env }) {
 
   return json(200, { success: 'true' });
 }
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname === '/api/contact') {
+      return request.method === 'POST'
+        ? handleContact(request, env)
+        : new Response('Method not allowed', { status: 405 });
+    }
+
+    return env.ASSETS.fetch(request);
+  }
+};
