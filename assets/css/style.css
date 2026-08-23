@@ -758,6 +758,43 @@ textarea {
   color: var(--ink-70);
 }
 
+/* Menu heading — the logo circles, the word, then a rule running out. */
+.menu-head {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.5vw, 26px);
+  margin-bottom: clamp(36px, 5vw, 60px);
+}
+
+.menu-head__circles {
+  flex: none;
+}
+
+.menu-head__circles span {
+  width: clamp(15px, 1.8vw, 22px);
+  aspect-ratio: 1;
+}
+
+.menu-head__circles span:nth-child(-n + 3) {
+  margin-right: clamp(-8px, -0.8vw, -5px);
+}
+
+.menu-head__title {
+  font-family: var(--f-en);
+  font-size: clamp(30px, 5vw, 54px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+}
+
+.menu-head__rule {
+  flex: 1;
+  height: 1px;
+  min-width: 24px;
+  background: var(--line);
+}
+
 /* --------------------------------------------------------------------------
    8b. Home page — the way in to each section
    -------------------------------------------------------------------------- */

@@ -209,8 +209,12 @@ write(
   <!-- ====================== MENU ====================== -->
   <section class="section">
     <div class="container">
-      <header class="sec-head reveal">
-        <h2 class="sec-head__title">MENU</h2>
+      <header class="menu-head reveal">
+        <span class="circles menu-head__circles" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </span>
+        <h2 class="menu-head__title">MENU</h2>
+        <span class="menu-head__rule" aria-hidden="true"></span>
       </header>
 
       <div class="portal">
@@ -246,7 +250,7 @@ write(
     "OMIYAcappellaとは？｜OMIYAcappella",
     "バンドを固定せず、練習も強制せず、歌いたい人が歌いたいときに集まるための「場」。6つの決まりごと、参加までの流れ、募集要項をまとめています。",
     page_hero(
-        "About",
+        "Concept &amp; Requirements",
         "OMIYAcappellaとは？",
         "OMIYAcappella は「サークル」ではありません。バンドを固定せず、練習も強制せず、"
         "歌いたい人が歌いたいときに集まるための<strong>「場」</strong>を提供する、大宮周辺のアカペラプラットフォームです。",
@@ -260,7 +264,7 @@ write(
     "ギャラリー｜OMIYAcappella",
     "イベント出演時の演奏動画と、企画バンドの音源をまとめています。カードをクリックするとその場で再生できます。",
     page_hero(
-        "Gallery",
+        "Videos &amp; Recordings",
         "ギャラリー",
         "イベント出演時の演奏動画と、企画バンドの音源をまとめています。"
         "カードをクリックすると、このページのまま再生できます。",
@@ -275,7 +279,7 @@ write(
     "企画一覧｜OMIYAcappella",
     "2022年4月から現在まで、LINEグループで実際に立ち上がった企画を新しい順に並べています。",
     page_hero(
-        "Projects",
+        "Since 2022",
         "企画一覧",
         "2022年4月から現在まで、LINEグループで実際に立ち上がった企画を新しい順に並べています。"
         "歌いたい曲があれば、メンバーなら誰でもこの形で募集をかけられます。",
@@ -289,7 +293,7 @@ write(
     "お問い合わせ｜OMIYAcappella",
     "参加のご希望、ご質問、イベント出演のご相談はこちらから。送信内容は運営に届き、確認のうえ順次ご返信します。",
     page_hero(
-        "Contact",
+        "Join us",
         "お問い合わせ",
         "参加のご希望、ご質問、イベント出演のご相談などはこちらから。"
         "送信内容は運営のメールアドレス宛に届き、確認のうえ順次ご返信します。",
