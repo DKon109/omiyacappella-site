@@ -8,6 +8,9 @@
  * Bindings (see wrangler.toml):
  *   ASSETS             the built site
  *   CONTACT_ENDPOINT   secret — where the form is forwarded
+ *   CONTACT_CC         secret, optional — a second address copied on every
+ *                      enquiry. Both live in secrets rather than in this file
+ *                      so that no address of a real person is in the repo.
  */
 
 const FIELDS = ['name', 'email', 'type', 'gender', 'age', 'area', 'circle', 'history', 'sns', 'message'];
@@ -65,6 +68,9 @@ async function handleContact(request, env) {
 
   if (values.sns) payload.append('SNSアカウント名', values.sns);
   payload.append('お問い合わせ内容', values.message);
+  // A copy for whoever is not the address the form is registered to. It shows
+  // in the recipients' Cc header, so both organisers can see who else got it.
+  if (env.CONTACT_CC) payload.append('_cc', env.CONTACT_CC);
   payload.append('_subject', `【OMIYAcappella】サイトからのお問い合わせ：${values.type}`);
   payload.append('_template', 'table');
   payload.append('_captcha', 'false');

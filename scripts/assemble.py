@@ -27,6 +27,12 @@ PARTS = ROOT / "parts"
 # deploying anywhere else.
 SITE_URL = "https://omiya.acappella.workers.dev"
 
+# Cloudflare Web Analytics. The token is issued by the dashboard once the site
+# is live, so this stays empty until then and no beacon is emitted. It counts
+# page views without cookies or local storage, which is why there is no consent
+# banner anywhere on this site — keep it that way.
+ANALYTICS_TOKEN = ""
+
 FONTS = (
     'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800'
     '&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap'
@@ -280,6 +286,15 @@ def head(loc, title, description, page, structured=""):
 """
 
 
+def analytics():
+    if not ANALYTICS_TOKEN:
+        return ""
+    return (
+        '<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+        f"data-cf-beacon='{{\"token\": \"{ANALYTICS_TOKEN}\"}}'></script>\n"
+    )
+
+
 def loader():
     return """
 <!-- Opening animation: the four logo circles converging -->
@@ -467,6 +482,7 @@ def write(loc, page, body, extra="", structured=""):
         + part(loc, "footer")
         + '\n<p class="proto-flag">Prototype</p>\n\n'
         + f'<script src="{loc["up"]}assets/js/main.js"></script>\n'
+        + analytics()
         + "</body>\n</html>\n"
     )
     out = path_for(loc, page)
