@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://omiyacappella.com/</loc></url>
-  <url><loc>https://omiyacappella.com/about.html</loc></url>
-  <url><loc>https://omiyacappella.com/gallery.html</loc></url>
-  <url><loc>https://omiyacappella.com/projects.html</loc></url>
-  <url><loc>https://omiyacappella.com/contact.html</loc></url>
-  <url><loc>https://omiyacappella.com/rules.html</loc></url>
+  <url><loc>https://omiyacappella.com/about</loc></url>
+  <url><loc>https://omiyacappella.com/gallery</loc></url>
+  <url><loc>https://omiyacappella.com/projects</loc></url>
+  <url><loc>https://omiyacappella.com/contact</loc></url>
+  <url><loc>https://omiyacappella.com/rules</loc></url>
   <url><loc>https://omiyacappella.com/en/</loc></url>
-  <url><loc>https://omiyacappella.com/en/about.html</loc></url>
-  <url><loc>https://omiyacappella.com/en/gallery.html</loc></url>
-  <url><loc>https://omiyacappella.com/en/projects.html</loc></url>
-  <url><loc>https://omiyacappella.com/en/contact.html</loc></url>
-  <url><loc>https://omiyacappella.com/en/rules.html</loc></url>
+  <url><loc>https://omiyacappella.com/en/about</loc></url>
+  <url><loc>https://omiyacappella.com/en/gallery</loc></url>
+  <url><loc>https://omiyacappella.com/en/projects</loc></url>
+  <url><loc>https://omiyacappella.com/en/contact</loc></url>
+  <url><loc>https://omiyacappella.com/en/rules</loc></url>
 </urlset>

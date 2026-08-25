@@ -219,10 +219,22 @@ WRITTEN = []
 
 
 def url_for(loc, page):
-    """The absolute url a page is published at."""
-    tail = "" if page == "index.html" else page
+    """The absolute url a page is published at.
+
+    Cloudflare's asset server drops the .html itself and redirects anything
+    still carrying it, so /about.html is never a destination — only a detour.
+    Everything the site emits therefore names the extensionless form.
+    """
+    tail = "" if page == "index.html" else page.removesuffix(".html")
     prefix = f"{SITE_URL}/{loc['out']}/" if loc["out"] else f"{SITE_URL}/"
     return prefix + tail
+
+
+def href(page):
+    """Relative link to a sibling page, matching url_for's extensionless form."""
+    page, _, frag = page.partition("#")
+    stem = "" if page == "index.html" else page.removesuffix(".html")
+    return "./" + stem + (f"#{frag}" if frag else "")
 
 
 def path_for(loc, page):
@@ -313,17 +325,18 @@ def lang_switch(loc, page):
     for other in LOCALES:
         current = other["lang"] == loc["lang"]
         # Within a locale the pages are siblings; across locales they are not.
+        stem = "" if page == "index.html" else page.removesuffix(".html")
         if current:
-            href = "./" + ("index.html" if page == "index.html" else page)
+            target = f"./{stem}"
         elif other["out"]:
-            href = f"./{other['out']}/{page}"
+            target = f"./{other['out']}/{stem}"
         else:
-            href = f"../{page}"
+            target = f"../{stem}"
         short = "JA" if other["lang"] == "ja" else "EN"
         cls = " is-current" if current else ""
         aria = ' aria-current="true"' if current else ""
         opts.append(
-            f'<a class="lang__opt{cls}" href="{href}" hreflang="{other["lang"]}" '
+            f'<a class="lang__opt{cls}" href="{target}" hreflang="{other["lang"]}" '
             f'lang="{other["lang"]}"{aria}><span class="u-sr">{other["label"]}</span>'
             f'<span aria-hidden="true">{short}</span></a>'
         )
@@ -336,16 +349,16 @@ def lang_switch(loc, page):
 
 def header(loc, page):
     stuck = "" if page == "index.html" else " is-stuck"
-    home = "#top" if page == "index.html" else "./index.html"
+    home = "#top" if page == "index.html" else "./"
     items = []
-    for href, label in loc["nav"]:
-        current = " is-current" if href == page else ""
+    for nav_href, label in loc["nav"]:
+        current = " is-current" if nav_href == page else ""
         items.append(
-            f'        <li><a class="nav__link{current}" href="./{href}">{label}</a></li>'
+            f'        <li><a class="nav__link{current}" href="{href(nav_href)}">{label}</a></li>'
         )
     cta_current = " is-current" if page == "contact.html" else ""
     items.append(
-        f'        <li><a class="btn nav__cta{cta_current}" href="./contact.html">'
+        f'        <li><a class="btn nav__cta{cta_current}" href="./contact">'
         f'{loc["cta"]}<span class="btn__arrow" aria-hidden="true">→</span></a></li>'
     )
     items.append(lang_switch(loc, page))
@@ -385,7 +398,7 @@ def page_hero(loc, page):
       <p class="page-hero__en">{eyebrow}</p>
       <h1 class="page-hero__title">{title}</h1>
       <p class="sec-head__lead" style="margin-top:20px">{lead}</p>
-      <p class="breadcrumb"><a href="./index.html">{loc['crumb_home']}</a> {loc['crumb_sep']} {crumb}</p>
+      <p class="breadcrumb"><a href="./">{loc['crumb_home']}</a> {loc['crumb_sep']} {crumb}</p>
     </div>
   </section>
 """
@@ -495,8 +508,8 @@ def write(loc, page, body, extra="", structured=""):
 
 def home_cards(loc):
     cards = []
-    for href, no, en, title, text in loc["cards"]:
-        cards.append(f"""        <a class="portal__card reveal" href="./{href}">
+    for card_href, no, en, title, text in loc["cards"]:
+        cards.append(f"""        <a class="portal__card reveal" href="{href(card_href)}">
           <span class="portal__ghost" aria-hidden="true">{no}</span>
           <p class="portal__en">{en}</p>
           <h3 class="portal__title">{title}</h3>
@@ -542,8 +555,8 @@ def build(loc):
           {loc['join_text']}
         </p>
         <div class="join__actions">
-          <a class="btn btn--accent btn--lg" href="./contact.html">{loc['join_cta']}<span class="btn__arrow" aria-hidden="true">→</span></a>
-          <a class="btn btn--lg" href="./about.html">{loc['join_alt']}</a>
+          <a class="btn btn--accent btn--lg" href="./contact">{loc['join_cta']}<span class="btn__arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--lg" href="./about">{loc['join_alt']}</a>
         </div>
       </div>
     </div>

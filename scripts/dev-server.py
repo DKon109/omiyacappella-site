@@ -5,15 +5,27 @@ python -m http.server sends Last-Modified, and browsers then hold on to CSS and
 JS across reloads — which during development means editing a file and seeing the
 old one. Everything here is served with no-store.
 
+It also serves /about from about.html, the way Cloudflare's asset server does,
+so that the extensionless links the site is built with resolve here too.
+
     python3 scripts/dev-server.py [port]
 """
 
+import os
 import sys
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 
 class NoCacheHandler(SimpleHTTPRequestHandler):
+    def translate_path(self, path):
+        local = super().translate_path(path)
+        if not os.path.exists(local) and not path.endswith("/"):
+            candidate = local + ".html"
+            if os.path.isfile(candidate):
+                return candidate
+        return local
+
     def end_headers(self):
         self.send_header("Cache-Control", "no-store, must-revalidate")
         self.send_header("Pragma", "no-cache")
