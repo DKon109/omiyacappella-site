@@ -8,19 +8,16 @@
  * Bindings (see wrangler.toml):
  *   ASSETS             the built site
  *   CONTACT_ENDPOINT   secret — where the form is forwarded
- *   CONTACT_CC         secret, optional — overrides CONTACT_CC_DEFAULT below.
+ *   CONTACT_CC         secret, optional — a second address copied on every
+ *                      enquiry, so both organisers see it without forwarding.
+ *
+ * Neither address appears in this repository: it is public, and they belong to
+ * real people. If CONTACT_CC is unset the copy is simply not sent, so check it
+ * after any change that redeploys the Worker.
  */
 
 const FIELDS = ['name', 'email', 'type', 'gender', 'age', 'area', 'circle', 'history', 'sns', 'message'];
 const MAX_LEN = 4000;
-
-// The form is registered to the circle's administrator; this copies the same
-// enquiry to the other organiser so neither has to forward anything by hand.
-// It sits here rather than in a secret so that delivery does not depend on
-// remembering a dashboard step — this repository is private, and no part of
-// worker/ is ever served to visitors. Set the CONTACT_CC secret to override it,
-// or to an empty value to switch the copy off.
-const CONTACT_CC_DEFAULT = 'REDACTED@example.com';
 
 const json = (status, body) =>
   new Response(JSON.stringify(body), {
@@ -75,7 +72,7 @@ async function handleContact(request, env) {
   if (values.sns) payload.append('SNSアカウント名', values.sns);
   payload.append('お問い合わせ内容', values.message);
   // Shows in the recipients' Cc header, so both organisers see who else got it.
-  const cc = (env.CONTACT_CC ?? CONTACT_CC_DEFAULT).trim();
+  const cc = (env.CONTACT_CC || '').trim();
   if (cc) payload.append('_cc', cc);
   payload.append('_subject', `【OMIYAcappella】サイトからのお問い合わせ：${values.type}`);
   payload.append('_template', 'table');
