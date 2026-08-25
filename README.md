@@ -308,7 +308,7 @@ Always Use HTTPS, and the `workers.dev` subdomain is switched off.
 ## Known issues
 
 1. **No privacy policy.** The join form collects gender, age and location. One is owed.
-3. **LCP p99 is around 11 s** on gallery pages, from the video weight. Re-encoding at
+2. **LCP p99 is around 11 s** on gallery pages, from the video weight. Re-encoding at
    640×360 would cut the files to roughly a third.
 3. **The LINE integration in `server/` is built but shelved.** It is tested and
    unwired; if revived, `ALLOWED_ORIGIN` still points at a retired GitHub Pages url.
