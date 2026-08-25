@@ -3,16 +3,11 @@
 #   build command   bash scripts/build.sh
 #   deploy command  npx wrangler deploy
 #
-# The Worker answers /api/contact and hands everything else to the static
-# files that scripts/build.sh assembles into dist/.
+# The Worker serves the static files that scripts/build.sh assembles into dist/.
 #
-# Three secrets are set in the dashboard, under *Runtime* variables and secrets —
-# the Build section of the same page is a different store the Worker cannot read:
-#   RESEND_API_KEY     Resend api key
-#   CONTACT_TO         the organiser the contact form is addressed to
-#   CONTACT_CC         optional, a second organiser copied on every enquiry
-# Adding a secret only creates a version; promote it under Deployments or it
-# never reaches the running Worker.
+# The Worker needs no secrets: the contact form posts straight from the browser.
+# Its endpoint is injected at build time — see the FORM_ENDPOINT notes in
+# scripts/build.sh, which reads *build* variables, not runtime ones.
 # Must match the Worker that already exists in the dashboard, which is what
 # Workers Builds is wired to. Renaming it here would deploy to a second,
 # unconfigured Worker instead of updating this one. The name is not public:

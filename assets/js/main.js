@@ -13,7 +13,14 @@
      reports that nothing was sent; scripts/build.sh points it at /api/contact
      for published builds, which is a Pages Function holding the destination in
      a Cloudflare secret. The address is never in the JavaScript. */
+  /* Injected by scripts/build.sh from the FORM_ENDPOINT build variable, so the
+     endpoint is not committed. The browser posts to it directly: a relay that
+     accepts a submission from a visitor's own connection refuses the same
+     request made server-side from a datacentre, which is why this does not go
+     through the Worker. Empty here means the local preview validates without
+     sending. */
   var FORM_ENDPOINT = '';
+  var FORM_CC = '';
 
   /* Written daily by .github/workflows/x-latest.yml. When it is present the X
      section renders from it; the entries below stand in until then, and again
@@ -731,10 +738,34 @@
       return;
     }
 
-    var data = new FormData(form);
-    data.append('_subject', '【OMIYAcappella】サイトからのお問い合わせ：' + data.get('type'));
+    var raw = new FormData(form);
+    var parts = raw.getAll('parts').filter(Boolean);
+
+    /* Relabelled in Japanese, because this lands in the organisers' inbox as a
+       table of whatever keys we send. Fields only shown for a membership
+       enquiry are omitted when empty rather than sent blank. */
+    var data = new FormData();
+    var add = function (label, value) {
+      if (value) data.append(label, value);
+    };
+    add('お名前', raw.get('name'));
+    add('メールアドレス', raw.get('email'));
+    add('お問い合わせ種別', raw.get('type'));
+    add('性別', raw.get('gender'));
+    add('年齢', raw.get('age'));
+    add('居住地', raw.get('area'));
+    add('所属サークル名', raw.get('circle'));
+    add('アカペラ歴', raw.get('history'));
+    add('可能パート', parts.join(' / '));
+    add('SNSアカウント名', raw.get('sns'));
+    add('お問い合わせ内容', raw.get('message'));
+
+    data.append('_subject', '【OMIYAcappella】サイトからのお問い合わせ：' + raw.get('type'));
     data.append('_template', 'table');
     data.append('_captcha', 'false');
+    // So replying to the notification answers the person who wrote in.
+    data.append('_replyto', raw.get('email'));
+    if (FORM_CC) data.append('_cc', FORM_CC);
 
     submitBtn.disabled = true;
     say(SAY.sending, false);
@@ -748,7 +779,13 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json().catch(function () { return {}; });
       })
-      .then(function () {
+      .then(function (result) {
+        /* A refusal arrives as HTTP 200 with success:"false" in the body — an
+           unactivated form, a rejected origin — so the status code alone would
+           report a delivery that never happened. */
+        if (result && String(result.success) === 'false') {
+          throw new Error(result.message || 'not delivered');
+        }
         form.reset();
         say(SAY.sent, true);
       })

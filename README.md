@@ -125,11 +125,13 @@ everywhere, while still writing `about.html` to disk because that is the file th
 asset server maps `/about` to. `scripts/dev-server.py` was taught the same mapping,
 so local preview and production agree about what a link means.
 
-### The contact form never sees the address
+### The contact form
 
-The destination is not in the page, the JavaScript, or the repository. The form
-posts to `/api/contact`, a Worker that validates the submission and forwards it,
-with the address held in a Cloudflare secret.
+The browser posts straight to the relay, and the destination is an **alias url**
+issued by the relay rather than a mailbox, so no address appears in the page, the
+JavaScript, or this repository. The alias is injected at build time from a build
+variable, and an unset one makes the form validate and say so rather than pretend
+to send.
 
 Choosing `参加を希望する` ("I want to join") reveals seven more fields — gender, age,
 prefecture, circle, years singing, parts they can cover, and an optional social
@@ -162,13 +164,19 @@ Two real defects surfaced while isolating that:
   checked only the status code, so it had been **reporting deliveries that never
   happened**. It now surfaces the reason as a 502.
 
-The fix was to stop relaying and start sending. Cloudflare's own Email Sending
-binding was the obvious candidate — no API key, no external account — but it
-requires the Workers Paid plan, so mail goes through **Resend** instead. It
-authenticates by API key rather than by source address, which is the property
-FormSubmit lacked, and it sends from the site's own domain rather than a relay's,
-which also helps the mail survive spam filtering. Recipients and the key live in
-secrets, since this repository is public.
+The fix was to stop sending server-side. A relay that refuses a datacentre
+address has no objection to the same submission arriving from a visitor's own
+connection, so the browser posts directly and the Worker is out of the path
+entirely. That reintroduces the problem the Worker existed to solve — a public
+endpoint — which the relay's **alias url** answers: it identifies the form
+without naming a mailbox.
+
+Two alternatives were measured and rejected. Cloudflare's own Email Sending
+binding is the tidiest design — a binding, no key, no third party — but it is
+gated behind the Workers Paid plan. Resend was implemented and works, but needs
+an account, a key and DNS records to send from this domain; that is the right
+answer if deliverability from `omiyacappella.com` starts to matter, and the wrong
+one while a simpler path exists.
 
 ### The X section updates itself
 
@@ -238,8 +246,8 @@ and **must stay empty**, or visits get counted twice.
 | Frontend | HTML, CSS, vanilla JS — no framework, no build step, no runtime dependency |
 | Generation | Python 3 (`scripts/assemble.py`), no template engine |
 | Hosting | Cloudflare Workers with static assets |
-| Backend | One Worker route (`/api/contact`) |
-| Mail | Resend API, called from the Worker |
+| Backend | None — the Worker only serves assets |
+| Mail | Relay posted from the browser, addressed by alias |
 | Automation | GitHub Actions + Playwright, daily |
 | Analytics | Cloudflare Web Analytics |
 | CI/CD | Cloudflare Workers Builds — push to `main` deploys |
