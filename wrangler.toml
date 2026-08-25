@@ -10,7 +10,11 @@
 #   CONTACT_ENDPOINT   where the contact form is forwarded
 # and one is optional:
 #   CONTACT_CC         overrides the copy address in worker/index.js
-name = "omiya"
+# Must match the Worker that already exists in the dashboard, which is what
+# Workers Builds is wired to. Renaming it here would deploy to a second,
+# unconfigured Worker instead of updating this one. The name is not public:
+# visitors arrive on the custom domain below.
+name = "omiyacappella-site"
 main = "worker/index.js"
 compatibility_date = "2026-08-01"
 
