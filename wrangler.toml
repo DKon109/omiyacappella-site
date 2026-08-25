@@ -6,10 +6,12 @@
 # The Worker answers /api/contact and hands everything else to the static
 # files that scripts/build.sh assembles into dist/.
 #
-# One secret must be set in the dashboard (Settings → Variables and Secrets):
-#   CONTACT_ENDPOINT   where the contact form is forwarded
-# and one is optional:
-#   CONTACT_CC         overrides the copy address in worker/index.js
+# Two secrets are set in the dashboard, under *Runtime* variables and secrets —
+# the Build section of the same page is a different store the Worker cannot read:
+#   CONTACT_TO         the organiser the contact form is addressed to
+#   CONTACT_CC         optional, a second organiser copied on every enquiry
+# Adding a secret only creates a version; promote it under Deployments or it
+# never reaches the running Worker.
 # Must match the Worker that already exists in the dashboard, which is what
 # Workers Builds is wired to. Renaming it here would deploy to a second,
 # unconfigured Worker instead of updating this one. The name is not public:
@@ -22,9 +24,9 @@ compatibility_date = "2026-08-01"
 # second custom domain, so the site answers on one hostname and search engines
 # are never offered two copies of it.
 #
-# This deploy FAILS until omiyacappella.com is added to the Cloudflare account —
-# which is the intended behaviour: better a loud failure than a live site whose
-# canonical tags point at a domain that does not resolve.
+# Keep this in step with SITE_URL in scripts/assemble.py: the canonical tags are
+# built from that, and one pointing at a host the Worker does not answer on
+# tells Google to index nothing.
 routes = [
   { pattern = "omiyacappella.com", custom_domain = true }
 ]
@@ -32,3 +34,8 @@ routes = [
 [assets]
 directory = "./dist"
 binding = "ASSETS"
+
+# Cloudflare Email Sending. The domain must be onboarded once:
+#   npx wrangler email sending enable omiyacappella.com
+[[send_email]]
+name = "EMAIL"

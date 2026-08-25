@@ -2,22 +2,30 @@
  * OMIYAcappella — the deployed site.
  *
  * Cloudflare serves the files in dist/ through the ASSETS binding; this Worker
- * sits in front only to answer the contact form, whose destination address is
- * held in a secret rather than shipped in the page's JavaScript.
+ * sits in front only to answer the contact form.
+ *
+ * Mail goes out through Cloudflare's own Email Sending binding rather than a
+ * third-party form relay. The relay we used first (FormSubmit) answers 429 to
+ * every request from Cloudflare's egress addresses while accepting the same
+ * request from a home connection, so no enquiry could ever be delivered.
  *
  * Bindings (see wrangler.toml):
- *   ASSETS             the built site
- *   CONTACT_ENDPOINT   secret — where the form is forwarded
- *   CONTACT_CC         secret, optional — a second address copied on every
- *                      enquiry, so both organisers see it without forwarding.
+ *   ASSETS       the built site
+ *   EMAIL        Cloudflare Email Sending
+ *   CONTACT_TO   secret — the organiser the form is addressed to
+ *   CONTACT_CC   secret, optional — a second organiser copied on every enquiry
  *
- * Neither address appears in this repository: it is public, and they belong to
- * real people. If CONTACT_CC is unset the copy is simply not sent, so check it
- * after any change that redeploys the Worker.
+ * Neither address is in this repository: it is public, and they belong to real
+ * people. An unset CONTACT_CC simply sends no copy, so check it after any
+ * change that redeploys the Worker.
  */
 
 const FIELDS = ['name', 'email', 'type', 'gender', 'age', 'area', 'circle', 'history', 'sns', 'message'];
 const MAX_LEN = 4000;
+
+// The from address must sit on a domain onboarded to Email Sending. It is not
+// a mailbox anyone reads — replies go to the enquirer via Reply-To.
+const MAIL_FROM = 'form@omiyacappella.com';
 
 const json = (status, body) =>
   new Response(JSON.stringify(body), {
@@ -25,8 +33,32 @@ const json = (status, body) =>
     headers: { 'Content-Type': 'application/json; charset=utf-8' }
   });
 
+const escapeHtml = (s) =>
+  s.replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+
+/** The enquiry as label/value pairs, in the order the form asks for them. */
+function rows(values, parts) {
+  const out = [
+    ['お名前', values.name],
+    ['メールアドレス', values.email],
+    ['お問い合わせ種別', values.type]
+  ];
+  // Only present on a membership enquiry.
+  if (values.gender) out.push(['性別', values.gender]);
+  if (values.age) out.push(['年齢', values.age]);
+  if (values.area) out.push(['居住地', values.area]);
+  if (values.circle) out.push(['所属サークル名', values.circle]);
+  if (values.history) out.push(['アカペラ歴', values.history]);
+  if (parts.length) out.push(['可能パート', parts.join(' / ')]);
+  if (values.sns) out.push(['SNSアカウント名', values.sns]);
+  out.push(['お問い合わせ内容', values.message]);
+  return out;
+}
+
 async function handleContact(request, env) {
-  if (!env.CONTACT_ENDPOINT) {
+  if (!env.EMAIL || !env.CONTACT_TO) {
     return json(503, { error: 'contact endpoint is not configured' });
   }
 
@@ -47,6 +79,7 @@ async function handleContact(request, env) {
   for (const field of FIELDS) {
     values[field] = (form.get(field) || '').toString().slice(0, MAX_LEN).trim();
   }
+  const parts = form.getAll('parts').map((p) => p.toString().trim()).filter(Boolean);
 
   if (!values.name || !values.message) {
     return json(400, { error: 'name and message are required' });
@@ -55,61 +88,32 @@ async function handleContact(request, env) {
     return json(400, { error: 'invalid email' });
   }
 
-  const payload = new FormData();
-  payload.append('お名前', values.name);
-  payload.append('メールアドレス', values.email);
-  payload.append('お問い合わせ種別', values.type);
-  // Only present on a membership enquiry.
-  if (values.gender) payload.append('性別', values.gender);
-  if (values.age) payload.append('年齢', values.age);
-  if (values.area) payload.append('居住地', values.area);
-  if (values.circle) payload.append('所属サークル名', values.circle);
-  if (values.history) payload.append('アカペラ歴', values.history);
+  const pairs = rows(values, parts);
+  const text = pairs.map(([k, v]) => `${k}\n${v}`).join('\n\n');
+  const html =
+    '<table cellpadding="8" style="border-collapse:collapse;font-family:sans-serif;font-size:14px">'
+    + pairs.map(([k, v]) =>
+      `<tr><th align="left" valign="top" style="background:#f5f1e8;white-space:nowrap">${escapeHtml(k)}</th>`
+      + `<td style="border-bottom:1px solid #e4e0d8">${escapeHtml(v).replace(/\n/g, '<br>')}</td></tr>`
+    ).join('')
+    + '</table>';
 
-  const parts = form.getAll('parts').map((p) => p.toString()).filter(Boolean);
-  if (parts.length) payload.append('可能パート', parts.join(' / '));
-
-  if (values.sns) payload.append('SNSアカウント名', values.sns);
-  payload.append('お問い合わせ内容', values.message);
-  // Shows in the recipients' Cc header, so both organisers see who else got it.
+  const to = [env.CONTACT_TO];
   const cc = (env.CONTACT_CC || '').trim();
-  if (cc) payload.append('_cc', cc);
-  payload.append('_subject', `【OMIYAcappella】サイトからのお問い合わせ：${values.type}`);
-  payload.append('_template', 'table');
-  payload.append('_captcha', 'false');
-  // So a reply goes back to the person who wrote in.
-  payload.append('_replyto', values.email);
+  if (cc) to.push(cc);
 
-  let upstream;
   try {
-    // FormSubmit refuses a request with no Origin — it reads a bare one as a
-    // page opened from the filesystem and answers "open this through a web
-    // server" instead of sending. A browser sets these; a Worker forwarding
-    // server-side has to say where the submission came from itself.
-    const origin = new URL(request.url).origin;
-    upstream = await fetch(env.CONTACT_ENDPOINT, {
-      method: 'POST',
-      body: payload,
-      headers: {
-        Accept: 'application/json',
-        Origin: origin,
-        Referer: `${origin}/contact`
-      }
+    await env.EMAIL.send({
+      to,
+      from: { email: MAIL_FROM, name: 'OMIYAcappella サイト' },
+      // So a reply goes back to the person who wrote in, not to a dead address.
+      replyTo: values.email,
+      subject: `【OMIYAcappella】サイトからのお問い合わせ：${values.type || 'その他'}`,
+      text,
+      html
     });
-  } catch {
-    return json(502, { error: 'could not reach the mail service' });
-  }
-
-  if (!upstream.ok) {
-    return json(502, { error: `mail service returned ${upstream.status}` });
-  }
-
-  // A refusal comes back as 200 with success:"false" — an unactivated form, or
-  // a rejected origin — so the status code alone would report a delivery that
-  // never happened.
-  const result = await upstream.json().catch(() => ({}));
-  if (result && result.success === 'false') {
-    return json(502, { error: result.message || 'mail service refused the message' });
+  } catch (err) {
+    return json(502, { error: `could not send the message: ${err.message}` });
   }
 
   return json(200, { success: 'true' });

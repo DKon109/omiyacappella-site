@@ -149,7 +149,9 @@ reason. The fix is to promote the version, from Deployments or via
 submission failed. Eight retries over five minutes all returned 429, which looked
 like rate limiting. Sending the identical request to the identical endpoint from a
 home connection at the same moment returned 200 — so the limit was the source
-address, not the volume.
+address, not the volume. Activating the form (the other candidate explanation)
+changed nothing: the same comparison afterwards still gave 429 from Cloudflare and
+200 from a home line.
 
 Two real defects surfaced while isolating that:
 
@@ -160,8 +162,11 @@ Two real defects surfaced while isolating that:
   checked only the status code, so it had been **reporting deliveries that never
   happened**. It now surfaces the reason as a 502.
 
-This is unresolved and is the one thing on the site that does not work. See
-[Known issues](#known-issues).
+The fix was to stop relaying through a third party. Mail now goes out through
+**Cloudflare's own Email Sending binding** — no API key, no external account, and
+the message comes from the site's own domain rather than a relay's, which helps it
+survive spam filtering. The two recipients live in secrets, since this repository
+is public.
 
 ### The X section updates itself
 
@@ -232,6 +237,7 @@ and **must stay empty**, or visits get counted twice.
 | Generation | Python 3 (`scripts/assemble.py`), no template engine |
 | Hosting | Cloudflare Workers with static assets |
 | Backend | One Worker route (`/api/contact`) |
+| Mail | Cloudflare Email Sending (Workers binding) |
 | Automation | GitHub Actions + Playwright, daily |
 | Analytics | Cloudflare Web Analytics |
 | CI/CD | Cloudflare Workers Builds — push to `main` deploys |
@@ -301,18 +307,12 @@ Always Use HTTPS, and the `workers.dev` subdomain is switched off.
 
 ## Known issues
 
-1. **The contact form does not deliver.** FormSubmit rejects Cloudflare's egress
-   addresses; see [Two bugs worth writing down](#two-bugs-worth-writing-down). The
-   fix is either activating the form from a permitted address, or moving to Resend —
-   which supports Workers directly, is free to 3,000 messages a month, and would let
-   mail come from the site's own domain rather than a third party's, which also helps
-   it survive spam filtering.
-2. **No privacy policy.** The join form collects gender, age and location. One is owed.
+1. **No privacy policy.** The join form collects gender, age and location. One is owed.
 3. **LCP p99 is around 11 s** on gallery pages, from the video weight. Re-encoding at
    640×360 would cut the files to roughly a third.
-4. **The LINE integration in `server/` is built but shelved.** It is tested and
+3. **The LINE integration in `server/` is built but shelved.** It is tested and
    unwired; if revived, `ALLOWED_ORIGIN` still points at a retired GitHub Pages url.
-5. **One date in the project timeline is an estimate** — a March 2026 entry whose
+4. **One date in the project timeline is an estimate** — a March 2026 entry whose
    posting date was not visible in the source screenshot, inferred from the entries
    either side of it.
 
