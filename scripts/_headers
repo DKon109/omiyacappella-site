@@ -1,7 +1,11 @@
+# frame-ancestors replaces X-Frame-Options because the portfolio at
+# dkon109.github.io embeds this site as a live preview, and X-Frame-Options
+# cannot allow a second origin. Clickjacking protection is unchanged for
+# every other origin: only this site and the portfolio may frame it.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self' https://dkon109.github.io
   Permissions-Policy: geolocation=(), microphone=(), camera=()
 
 # Fingerprinted by their status id, so they never change under the same name.
