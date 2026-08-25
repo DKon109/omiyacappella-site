@@ -480,7 +480,7 @@ def write(loc, page, body, extra="", structured=""):
         + extra
         + "\n"
         + part(loc, "footer")
-        + '\n<p class="proto-flag">Prototype</p>\n\n'
+        + "\n"
         + f'<script src="{loc["up"]}assets/js/main.js"></script>\n'
         + analytics()
         + "</body>\n</html>\n"
