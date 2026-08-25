@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://omiya.acappella.workers.dev/sitemap.xml
+Sitemap: https://omiyacappella.com/sitemap.xml

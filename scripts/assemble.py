@@ -25,7 +25,7 @@ PARTS = ROOT / "parts"
 # the site is actually served from: a canonical pointing at a host that does not
 # exist tells Google to index nothing. Change it here and re-run before
 # deploying anywhere else.
-SITE_URL = "https://omiya.acappella.workers.dev"
+SITE_URL = "https://omiyacappella.com"
 
 # Cloudflare Web Analytics. The token is issued by the dashboard once the site
 # is live, so this stays empty until then and no beacon is emitted. It counts

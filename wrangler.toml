@@ -8,9 +8,22 @@
 #
 # One secret must be set in the dashboard (Settings → Variables and Secrets):
 #   CONTACT_ENDPOINT   where the contact form is forwarded
+# and one is optional:
+#   CONTACT_CC         overrides the copy address in worker/index.js
 name = "omiya"
 main = "worker/index.js"
 compatibility_date = "2026-08-01"
+
+# The apex only. www is sent here by a dashboard redirect rule rather than a
+# second custom domain, so the site answers on one hostname and search engines
+# are never offered two copies of it.
+#
+# This deploy FAILS until omiyacappella.com is added to the Cloudflare account —
+# which is the intended behaviour: better a loud failure than a live site whose
+# canonical tags point at a domain that does not resolve.
+routes = [
+  { pattern = "omiyacappella.com", custom_domain = true }
+]
 
 [assets]
 directory = "./dist"
