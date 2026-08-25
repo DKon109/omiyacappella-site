@@ -85,10 +85,19 @@ async function handleContact(request, env) {
 
   let upstream;
   try {
+    // FormSubmit refuses a request with no Origin — it reads a bare one as a
+    // page opened from the filesystem and answers "open this through a web
+    // server" instead of sending. A browser sets these; a Worker forwarding
+    // server-side has to say where the submission came from itself.
+    const origin = new URL(request.url).origin;
     upstream = await fetch(env.CONTACT_ENDPOINT, {
       method: 'POST',
       body: payload,
-      headers: { Accept: 'application/json' }
+      headers: {
+        Accept: 'application/json',
+        Origin: origin,
+        Referer: `${origin}/contact`
+      }
     });
   } catch {
     return json(502, { error: 'could not reach the mail service' });
@@ -96,6 +105,14 @@ async function handleContact(request, env) {
 
   if (!upstream.ok) {
     return json(502, { error: `mail service returned ${upstream.status}` });
+  }
+
+  // A refusal comes back as 200 with success:"false" — an unactivated form, or
+  // a rejected origin — so the status code alone would report a delivery that
+  // never happened.
+  const result = await upstream.json().catch(() => ({}));
+  if (result && result.success === 'false') {
+    return json(502, { error: result.message || 'mail service refused the message' });
   }
 
   return json(200, { success: 'true' });
