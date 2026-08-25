@@ -6,8 +6,9 @@
 # The Worker answers /api/contact and hands everything else to the static
 # files that scripts/build.sh assembles into dist/.
 #
-# Two secrets are set in the dashboard, under *Runtime* variables and secrets —
+# Three secrets are set in the dashboard, under *Runtime* variables and secrets —
 # the Build section of the same page is a different store the Worker cannot read:
+#   RESEND_API_KEY     Resend api key
 #   CONTACT_TO         the organiser the contact form is addressed to
 #   CONTACT_CC         optional, a second organiser copied on every enquiry
 # Adding a secret only creates a version; promote it under Deployments or it
@@ -34,8 +35,3 @@ routes = [
 [assets]
 directory = "./dist"
 binding = "ASSETS"
-
-# Cloudflare Email Sending. The domain must be onboarded once:
-#   npx wrangler email sending enable omiyacappella.com
-[[send_email]]
-name = "EMAIL"

@@ -162,11 +162,13 @@ Two real defects surfaced while isolating that:
   checked only the status code, so it had been **reporting deliveries that never
   happened**. It now surfaces the reason as a 502.
 
-The fix was to stop relaying through a third party. Mail now goes out through
-**Cloudflare's own Email Sending binding** — no API key, no external account, and
-the message comes from the site's own domain rather than a relay's, which helps it
-survive spam filtering. The two recipients live in secrets, since this repository
-is public.
+The fix was to stop relaying and start sending. Cloudflare's own Email Sending
+binding was the obvious candidate — no API key, no external account — but it
+requires the Workers Paid plan, so mail goes through **Resend** instead. It
+authenticates by API key rather than by source address, which is the property
+FormSubmit lacked, and it sends from the site's own domain rather than a relay's,
+which also helps the mail survive spam filtering. Recipients and the key live in
+secrets, since this repository is public.
 
 ### The X section updates itself
 
@@ -237,7 +239,7 @@ and **must stay empty**, or visits get counted twice.
 | Generation | Python 3 (`scripts/assemble.py`), no template engine |
 | Hosting | Cloudflare Workers with static assets |
 | Backend | One Worker route (`/api/contact`) |
-| Mail | Cloudflare Email Sending (Workers binding) |
+| Mail | Resend API, called from the Worker |
 | Automation | GitHub Actions + Playwright, daily |
 | Analytics | Cloudflare Web Analytics |
 | CI/CD | Cloudflare Workers Builds — push to `main` deploys |

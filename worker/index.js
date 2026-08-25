@@ -4,16 +4,18 @@
  * Cloudflare serves the files in dist/ through the ASSETS binding; this Worker
  * sits in front only to answer the contact form.
  *
- * Mail goes out through Cloudflare's own Email Sending binding rather than a
- * third-party form relay. The relay we used first (FormSubmit) answers 429 to
- * every request from Cloudflare's egress addresses while accepting the same
- * request from a home connection, so no enquiry could ever be delivered.
+ * Mail goes out through Resend's API. Two alternatives were tried first:
+ * FormSubmit answers 429 to every request from Cloudflare's egress addresses
+ * while accepting the same request from a home connection, and Cloudflare's own
+ * Email Sending binding requires the Workers Paid plan. Resend authenticates by
+ * API key rather than by source address, which is what makes it work here, and
+ * its free tier is far above what a contact form uses.
  *
  * Bindings (see wrangler.toml):
- *   ASSETS       the built site
- *   EMAIL        Cloudflare Email Sending
- *   CONTACT_TO   secret — the organiser the form is addressed to
- *   CONTACT_CC   secret, optional — a second organiser copied on every enquiry
+ *   ASSETS           the built site
+ *   RESEND_API_KEY   secret — Resend API key
+ *   CONTACT_TO       secret — the organiser the form is addressed to
+ *   CONTACT_CC       secret, optional — a second organiser copied on every enquiry
  *
  * Neither address is in this repository: it is public, and they belong to real
  * people. An unset CONTACT_CC simply sends no copy, so check it after any
@@ -23,9 +25,10 @@
 const FIELDS = ['name', 'email', 'type', 'gender', 'age', 'area', 'circle', 'history', 'sns', 'message'];
 const MAX_LEN = 4000;
 
-// The from address must sit on a domain onboarded to Email Sending. It is not
-// a mailbox anyone reads — replies go to the enquirer via Reply-To.
-const MAIL_FROM = 'form@omiyacappella.com';
+// The from address must sit on a domain verified in Resend. It is not a mailbox
+// anyone reads — replies go to the enquirer via Reply-To.
+const MAIL_FROM = 'OMIYAcappella <form@omiyacappella.com>';
+const RESEND_ENDPOINT = 'https://api.resend.com/emails';
 
 const json = (status, body) =>
   new Response(JSON.stringify(body), {
@@ -58,7 +61,7 @@ function rows(values, parts) {
 }
 
 async function handleContact(request, env) {
-  if (!env.EMAIL || !env.CONTACT_TO) {
+  if (!env.RESEND_API_KEY || !env.CONTACT_TO) {
     return json(503, { error: 'contact endpoint is not configured' });
   }
 
@@ -98,22 +101,36 @@ async function handleContact(request, env) {
     ).join('')
     + '</table>';
 
-  const to = [env.CONTACT_TO];
   const cc = (env.CONTACT_CC || '').trim();
-  if (cc) to.push(cc);
 
+  let upstream;
   try {
-    await env.EMAIL.send({
-      to,
-      from: { email: MAIL_FROM, name: 'OMIYAcappella サイト' },
-      // So a reply goes back to the person who wrote in, not to a dead address.
-      replyTo: values.email,
-      subject: `【OMIYAcappella】サイトからのお問い合わせ：${values.type || 'その他'}`,
-      text,
-      html
+    upstream = await fetch(RESEND_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: MAIL_FROM,
+        to: [env.CONTACT_TO],
+        ...(cc ? { cc: [cc] } : {}),
+        // So a reply goes back to the person who wrote in, not to a dead address.
+        reply_to: values.email,
+        subject: `【OMIYAcappella】サイトからのお問い合わせ：${values.type || 'その他'}`,
+        text,
+        html
+      })
     });
-  } catch (err) {
-    return json(502, { error: `could not send the message: ${err.message}` });
+  } catch {
+    return json(502, { error: 'could not reach the mail service' });
+  }
+
+  if (!upstream.ok) {
+    // Resend explains itself in the body; passing that through beats a bare
+    // status code when the next failure is a DNS record nobody added.
+    const detail = await upstream.text().catch(() => '');
+    return json(502, { error: `mail service returned ${upstream.status}`, detail: detail.slice(0, 300) });
   }
 
   return json(200, { success: 'true' });
