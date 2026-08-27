@@ -77,8 +77,18 @@ async function openTimeline(page) {
   );
 }
 
+/* Headless is refused outright: x.com answers a headless Chromium with 403 and a
+   39-byte document, while the same machine gets 200 and a full timeline from a
+   browser with a window. So the browser runs headed — offscreen, so it does not
+   steal focus when this runs on someone's desktop, and under a virtual display
+   when it runs in CI. */
+const LAUNCH = {
+  headless: false,
+  args: ['--window-position=-2400,-2400', '--window-size=1280,2000']
+};
+
 async function collectStatusIds() {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(LAUNCH);
   const page = await browser.newPage({ userAgent: UA, locale: 'ja-JP' });
 
   try {

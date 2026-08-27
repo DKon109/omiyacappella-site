@@ -24,16 +24,19 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.49.0
           npx playwright install --with-deps chromium
 
+      # x.com answers a headless browser with 403, so the script runs one with a
+      # window. On a runner that means a virtual display; xvfb is preinstalled on
+      # ubuntu-latest, and the browser's own libraries come from --with-deps.
       - name: Fetch
         id: fetch
-        run: node scripts/fetch-x-latest.mjs
+        run: xvfb-run -a node scripts/fetch-x-latest.mjs
 
       - name: Commit if changed
         run: |
