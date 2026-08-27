@@ -280,7 +280,10 @@ def head(loc, title, description, page, structured=""):
 <meta property="og:site_name" content="OMIYAcappella 大宮アカペラプラットフォーム">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
-<meta property="og:image" content="{SITE_URL}/assets/img/maihama-poster.jpg">
+<meta property="og:image" content="{SITE_URL}/assets/img/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OMIYAcappella">
 <meta property="og:locale" content="{'ja_JP' if loc['lang'] == 'ja' else 'en_US'}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@OMIYAacappella">
