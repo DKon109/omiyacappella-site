@@ -196,6 +196,14 @@ It costs nothing (1–2 minutes per run on the Actions free tier). **A failure c
 nothing** — the previous JSON stays, and if that is missing too, `main.js` falls back
 to three posts written into the source. The section cannot end up empty.
 
+X serves a logged-out profile inconsistently: sometimes the timeline, often a
+rate-limit notice or a login wall, and which one arrives varies by request rather
+than by anything the script controls. The first failure (27 Aug 2026) was a bare
+"waiting for locator('article')" timeout, which says nothing about which of those
+happened. It now retries three times with a widening gap and, on giving up,
+reports what the page actually said — enough to tell a temporary block from X
+closing the door for good, without re-running anything.
+
 ---
 
 ## SEO

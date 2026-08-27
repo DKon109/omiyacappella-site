@@ -42,16 +42,47 @@ const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
   '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
+/* X serves a logged-out profile inconsistently: sometimes the timeline, often a
+   rate-limit notice or a login wall, and which one you get varies by request
+   rather than by anything we control. One attempt is therefore not evidence of
+   anything, so this retries before giving up — and when it does give up, it
+   reports what the page actually said, so the next failure can be told apart
+   from this one without re-running anything. */
+const ATTEMPTS = 3;
+
+async function openTimeline(page) {
+  let lastSeen = '';
+
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    await page.goto(`https://x.com/${HANDLE}`, {
+      waitUntil: 'domcontentloaded',
+      timeout: 60000
+    });
+
+    try {
+      await page.waitForSelector('article', { timeout: 45000 });
+      if (attempt > 1) console.log(`timeline appeared on attempt ${attempt}`);
+      return;
+    } catch {
+      lastSeen = (await page.evaluate(() => document.body.innerText)
+        .catch(() => '')).replace(/\s+/g, ' ').trim().slice(0, 300);
+      console.warn(`attempt ${attempt}/${ATTEMPTS}: no posts rendered. Page said: ${lastSeen || '(nothing)'}`);
+      if (attempt < ATTEMPTS) await page.waitForTimeout(attempt * 15000);
+    }
+  }
+
+  throw new Error(
+    `x.com/${HANDLE} rendered no posts after ${ATTEMPTS} attempts. ` +
+    `Last page text: ${lastSeen || '(empty)'}`
+  );
+}
+
 async function collectStatusIds() {
   const browser = await chromium.launch();
   const page = await browser.newPage({ userAgent: UA, locale: 'ja-JP' });
 
   try {
-    await page.goto(`https://x.com/${HANDLE}`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
-    });
-    await page.waitForSelector('article', { timeout: 30000 });
+    await openTimeline(page);
 
     // The logged-out view stops after a handful of posts; a few scrolls is all
     // it takes to reach the end of what it will show.
