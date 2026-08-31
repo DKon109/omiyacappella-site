@@ -53,6 +53,8 @@ decide whether this succeeded:
 1. **Impressions and clicks in Search Console** for 「埼玉 社会人 アカペラサークル」
    (adult a cappella circle, Saitama) — does anyone find us by searching?
 2. **Contact form submissions** — does being findable convert into people writing in?
+   The form has been delivering since 27 Aug 2026, so this is now a real counter
+   rather than a plan.
 3. **Contact page views vs. submissions** — the join form asks for seven extra
    fields. If people arrive and leave, the form is too heavy and should be cut back.
 
@@ -127,11 +129,19 @@ so local preview and production agree about what a link means.
 
 ### The contact form
 
-The browser posts straight to the relay, and the destination is an **alias url**
-issued by the relay rather than a mailbox, so no address appears in the page, the
-JavaScript, or this repository. The alias is injected at build time from a build
-variable, and an unset one makes the form validate and say so rather than pretend
-to send.
+Live and delivering since 27 Aug 2026, to both organisers.
+
+The browser posts straight to the relay. The endpoint is injected at build time
+from a build variable rather than committed — `FORM_ENDPOINT`, with `FORM_CC` for
+the second recipient. Cloudflare keeps build variables in a different store from
+runtime secrets, and the build reads only the former; putting them in the wrong
+one is a silent no-op.
+
+The intent was to address the relay by the **alias url** it issues on activation,
+which identifies a form without naming a mailbox. That email never arrived, so
+the addresses are in the published JavaScript — accepted here because both are
+already published on ジモティー, but the alias remains the better answer if one
+ever turns up.
 
 Choosing `参加を希望する` ("I want to join") reveals seven more fields — gender, age,
 prefecture, circle, years singing, parts they can cover, and an optional social
@@ -178,13 +188,29 @@ an account, a key and DNS records to send from this domain; that is the right
 answer if deliverability from `omiyacappella.com` starts to matter, and the wrong
 one while a simpler path exists.
 
+### Link previews carry the group's own icon
+
+Shared links used to show a photograph from one performance, which says little
+about who is posting. The X account's icon does — four circles, the name, a
+moustache — and people already recognise it.
+
+It is square, and a preview card is 1.91:1, so pasting it in would crop the
+circles and the moustache away. `assets/img/og-card.jpg` composites it onto a
+1200x630 canvas instead, on a background sampled from the white inside the icon
+and feathered at the edges so the join does not show. Cream padding left a visible
+square; a blurred copy of the icon as a backdrop smeared the moustache into what
+looked like dirt.
+
+X caches a card when a post is made and does not refresh it, so a link shared
+before this change keeps the old image for good. New shares get the new one.
+
 ### The X section updates itself
 
 `.github/workflows/x-latest.yml` runs daily at 06:00 JST and commits only when
 something changed:
 
 ```
-Playwright opens x.com/OMIYAacappella
+Playwright opens x.com/OMIYAacappella  (headed — see below)
   → collect status ids, excluding the pinned post
   → fetch each through X's syndication endpoint (no API key)
   → keep the newest three
@@ -196,13 +222,28 @@ It costs nothing (1–2 minutes per run on the Actions free tier). **A failure c
 nothing** — the previous JSON stays, and if that is missing too, `main.js` falls back
 to three posts written into the source. The section cannot end up empty.
 
-X serves a logged-out profile inconsistently: sometimes the timeline, often a
-rate-limit notice or a login wall, and which one arrives varies by request rather
-than by anything the script controls. The first failure (27 Aug 2026) was a bare
-"waiting for locator('article')" timeout, which says nothing about which of those
-happened. It now retries three times with a widening gap and, on giving up,
-reports what the page actually said — enough to tell a temporary block from X
-closing the door for good, without re-running anything.
+#### x.com refuses a browser without a window
+
+The daily fetch broke on 27 Aug 2026 with a bare
+`waiting for locator('article')` timeout — no status, no page text, nothing to act
+on. Adding retries and dumping the page's own text produced only `(nothing)` three
+times over, which ruled out a rate-limit notice and a login wall in one go.
+
+The obvious next suspect was the runner's address: the same week, FormSubmit had
+turned out to be refusing Cloudflare's IPs, and datacentre blocks were on the
+mind. **Running the identical script on a home connection failed identically**,
+which killed that theory before any work was done on it.
+
+What the page was actually returning, once the response was inspected rather than
+the DOM, was **HTTP 403 and a 39-byte document**. The same machine, same network,
+same script, launched with `headless: false`: **200, 232 KB, seven articles.** X
+refuses headless browsers, and nothing else about the request mattered.
+
+So the browser runs headed, positioned offscreen so it never steals focus, and
+under `xvfb` on the runner. Two lessons worth keeping: an error that reports the
+DOM instead of the response can send you looking in the wrong place for a day,
+and the cheapest way to test "is it the environment?" is to reproduce it somewhere
+else before theorising.
 
 ---
 
@@ -255,7 +296,7 @@ and **must stay empty**, or visits get counted twice.
 | Generation | Python 3 (`scripts/assemble.py`), no template engine |
 | Hosting | Cloudflare Workers with static assets |
 | Backend | None — the Worker only serves assets |
-| Mail | Relay posted from the browser, addressed by alias |
+| Mail | FormSubmit, posted from the browser |
 | Automation | GitHub Actions + Playwright, daily |
 | Analytics | Cloudflare Web Analytics |
 | CI/CD | Cloudflare Workers Builds — push to `main` deploys |
@@ -325,14 +366,20 @@ Always Use HTTPS, and the `workers.dev` subdomain is switched off.
 
 ## Known issues
 
-1. **No privacy policy.** The join form collects gender, age and location. One is owed.
-2. **LCP p99 is around 11 s** on gallery pages, from the video weight. Re-encoding at
-   640×360 would cut the files to roughly a third.
-3. **The LINE integration in `server/` is built but shelved.** It is tested and
+1. **No privacy policy.** The join form collects gender, age and location. One is owed,
+   and this is the next thing to do.
+2. **Both organisers' addresses are in the published JavaScript**, because the relay
+   never issued the alias url that would have avoided it. Both are already public
+   elsewhere, so this was accepted rather than solved.
+3. **LCP p99 is around 11 s** on gallery pages, from the video weight. Re-encoding at
+   640x360 would cut the files to roughly a third.
+4. **The LINE integration in `server/` is built but shelved.** It is tested and
    unwired; if revived, `ALLOWED_ORIGIN` still points at a retired GitHub Pages url.
-4. **One date in the project timeline is an estimate** — a March 2026 entry whose
+5. **One date in the project timeline is an estimate** — a March 2026 entry whose
    posting date was not visible in the source screenshot, inferred from the entries
    either side of it.
+6. `actions/checkout` and `actions/setup-node` still run on Node 20 internally and
+   warn about its deprecation. Harmless; fixed by moving them to `@v5`.
 
 ## Privacy in the project timeline
 
