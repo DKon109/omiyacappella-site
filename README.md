@@ -66,7 +66,7 @@ decide whether this succeeded:
 | --- | --- |
 | `/` | Hero, menu, latest posts from X, join CTA |
 | `/about` | Six ground rules, how joining works, who we are looking for |
-| `/gallery` | 8 performance videos and 6 recordings, played in a lightbox |
+| `/gallery` | 9 performance videos and 6 recordings, played in a lightbox |
 | `/projects` | Every project since 2022 — 40 entries, past ones behind a toggle |
 | `/contact` | Enquiry form, with seven extra fields for membership enquiries |
 | `/rules` | The house rules in full |
@@ -109,7 +109,11 @@ The gallery originally embedded the group's X posts. Two things killed that:
 2. **X's embed widget is unreliable.** It has periods of not responding, during
    which the section renders as a blank rectangle.
 
-So the 14 clips (89 MB, largest 15.6 MB) are served from this site and played in a
+Not every clip came from X in the first place — a recording handed over by the band
+has no post to link to. Those cards are a `<button>` rather than an `<a>`, and the
+lightbox omits the link rather than rendering one to `null`.
+
+So the 15 clips (103 MB, largest 15.6 MB) are served from this site and played in a
 native `<video>` / `<audio>` element. If playback fails, the lightbox falls back to
 a link to the original post. Six of the clips were screen recordings of voice memos,
 which look wrong as thumbnails, so those render as waveform cards drawn from a
@@ -326,7 +330,7 @@ toolchain would have added upgrade work without buying anything the pages need.
 ├── worker/index.js     # asset serving + /api/contact
 ├── wrangler.toml       # Cloudflare deploy config
 ├── server/             # LINE webhook → project feed (built, not deployed)
-└── assets/             # css, js, img, video (14 files, 89 MB), data
+└── assets/             # css, js, img, video (15 files, 103 MB), data
 ```
 
 **Edit `parts/`, not the root HTML.** Header, navigation, titles, descriptions and

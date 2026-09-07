@@ -259,8 +259,12 @@
         .filter(Boolean).join(' — ');
     };
 
+    /* Not every recording was posted to X — some come straight from the band.
+       Those cards carry no href, and get no link rather than one to "null". */
     var xLink = function (item, label) {
-      return ' — <a href="' + item.getAttribute('href')
+      var href = item.getAttribute('href');
+      if (!href) return '';
+      return ' — <a href="' + href
         + '" target="_blank" rel="noopener">' + (label || T.seeOnX) + '</a>';
     };
 
@@ -297,9 +301,11 @@
         player.remove();
         var fallback = document.createElement('p');
         fallback.className = 'lightbox__fallback';
+        var href = item.getAttribute('href');
         fallback.innerHTML = T.playFailed
-          + '<a href="' + item.getAttribute('href')
-          + '" target="_blank" rel="noopener">' + T.playOnX + '</a>';
+          + (href
+            ? '<a href="' + href + '" target="_blank" rel="noopener">' + T.playOnX + '</a>'
+            : '');
         lbStage.appendChild(fallback);
       });
 
